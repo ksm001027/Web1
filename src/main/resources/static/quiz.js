@@ -15,26 +15,6 @@ function handleQuestionTypeChange() {
     subjectiveAnswer.style.display = 'block';
   }
 }
-
-
-
-function submitQuiz(event) {
-  event.preventDefault(); // 폼의 기본 제출 막기
-  const questionType = document.getElementById('questionType').value;
-  const question = document.getElementById('question').value;
-  let answer;
-
-  if (questionType === 'objective') {
-    // 객관식 정답 처리 로직
-  } else {
-    answer = document.getElementById('subjectiveAnswer').value;
-  }
-
-  // 제출된 답변을 표시
-  document.getElementById('displayAnswer').textContent = `질문: ${question}, 답변: ${answer}`;
-  document.getElementById('submittedAnswer').style.display = 'block';
-}
-
 function addOption() {
   const container = document.getElementById('option-container');
   const answerOptions = document.getElementById('answer-options');
@@ -72,3 +52,62 @@ function addOption() {
   answerLabel.prepend(clonedRadioOption);
   answerOptions.appendChild(answerLabel);
 }
+
+
+
+function submitQuiz(event) {
+  event.preventDefault();
+  const quizName = document.getElementById('quizName').value;
+  const questionType = document.getElementById('questionType').value;
+  const question = document.getElementById('question').value;
+  let options = [];
+  let correctAnswer;
+
+  if (questionType === 'objective') {
+    const optionElements = document.querySelectorAll('#option-container input[type="text"]');
+    options = Array.from(optionElements).map(option => option.value);
+    const correctOptionIndex = document.querySelector('input[name="correctAnswer"]:checked').value;
+    correctAnswer = options[correctOptionIndex - 1];
+  } else {
+    correctAnswer = document.getElementById('subjectiveAnswer').value;
+  }
+
+  const quizData = {
+    quizName: quizName,
+    questions: [{
+      text: question,
+      type: questionType,
+      options: options,
+      correctAnswer: correctAnswer
+    }]
+  };
+
+  fetch('/api/quiz', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(quizData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.quizId) {
+        window.location.href = '/question.html'; // 퀴즈 페이지로 리다이렉트
+      } else {
+        console.error('Quiz registration failed:', data.message);
+        document.getElementById('displayAnswer').textContent = '퀴즈 등록 실패';
+        document.getElementById('submittedAnswer').style.display = 'block';
+      }
+    })
+    .catch(error => {
+      console.error('Error submitting quiz:', error);
+      document.getElementById('displayAnswer').textContent = '퀴즈 등록 중 오류 발생: ' + error;
+      document.getElementById('submittedAnswer').style.display = 'block';
+    });
+}
+
