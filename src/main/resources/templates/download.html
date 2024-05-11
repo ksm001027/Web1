@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>다운로드 파일</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="file.css">
+</head>
+<body>
+<div class="container">
+  <h1>다운로드 업로드 파일</h1>
+  <ul>
+    <li th:each="file : ${files}">
+      <a th:href="@{'/download?filename=' + ${file}}" th:text="${file}">Download Link</a>
+    </li>
+  </ul>
+  <!-- 실시간으로 생성된 QR 코드 이미지를 보여주는 부분 -->
+  <div>
+    <img src="/generate-qr" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
+  </div>
+</div>
+</body>
+</html>
