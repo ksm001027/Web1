@@ -1,6 +1,5 @@
 package com.example.web1.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +27,7 @@ public class FileController {
   @Value("${upload.path}")
   private String uploadPath;
 
+<<<<<<< HEAD
   @GetMapping("/upload")
   public String showUploadForm(HttpSession session) {
     session.setAttribute("files", new ArrayList<String>()); // 파일 목록 초기화
@@ -52,8 +50,42 @@ public class FileController {
     } catch (Exception e) {
       e.printStackTrace();
       redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
+=======
+  @PostMapping("/upload")
+  public String handleFileUpload(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes, HttpSession session) {
+    List<String> uploadedFiles = (List<String>) session.getAttribute("files");
+    if (uploadedFiles == null) {
+      uploadedFiles = new ArrayList<>();
+      session.setAttribute("files", uploadedFiles);
+>>>>>>> 8161ea90530f3c65cdfb35b8ed7111d94e2ffc04
     }
-    return "redirect:/downloads"; // 업로드 후 다운로드 페이지로 리디렉트
+
+    for (MultipartFile file : files) {
+      if (file.isEmpty()) continue; // 비어 있는 파일은 무시
+
+      // 파일명 중복 처리
+      String originalFilename = file.getOriginalFilename();
+      String filename = originalFilename;
+      Path path = Paths.get(uploadPath + filename);
+      int count = 0;
+
+      // 같은 이름의 파일이 존재하면, 이름 변경
+      while (Files.exists(path)) {
+        count++;
+        filename = originalFilename.replaceAll("(?i)(\\.\\w+$)", "_" + count + "$1");
+        path = Paths.get(uploadPath + filename);
+      }
+
+      try {
+        Files.copy(file.getInputStream(), path);
+        uploadedFiles.add(filename);
+        redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + filename);
+      } catch (Exception e) {
+        e.printStackTrace();
+        redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
+      }
+    }
+    return "redirect:/";
   }
 
   @GetMapping("/downloads")
@@ -82,5 +114,10 @@ public class FileController {
     } catch (Exception e) {
       throw new RuntimeException("오류: " + e.getMessage());
     }
+  }
+
+  @GetMapping("/uploadForm")
+  public String showUploadForm() {
+    return "uploadForm";  // Thymeleaf가 처리할 수 있도록 뷰 이름 반환
   }
 }
