@@ -51,20 +51,35 @@ public class FileController {
     }
 
     for (MultipartFile file : files) {
-      if (file.isEmpty()) continue;  // 비어 있는 파일은 무시
+      if (file.isEmpty()) continue; // 비어 있는 파일은 무시
+
+      // 파일명 중복 처리
+      String originalFilename = file.getOriginalFilename();
+      String filename = originalFilename;
+      Path path = Paths.get(uploadPath + filename);
+      int count = 0;
+
+      // 같은 이름의 파일이 존재하면, 이름 변경
+      while (Files.exists(path)) {
+        count++;
+        filename = originalFilename.replaceAll("(?i)(\\.\\w+$)", "_" + count + "$1");
+        path = Paths.get(uploadPath + filename);
+      }
+
       try {
-        Path path = Paths.get(uploadPath + file.getOriginalFilename());
         Files.copy(file.getInputStream(), path);
-        uploadedFiles.add(file.getOriginalFilename());
-        redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + file.getOriginalFilename());
+        uploadedFiles.add(filename);
+        redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + filename);
       } catch (Exception e) {
         e.printStackTrace();
         redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
       }
     }
+
     // 업로드 후 현재 페이지로 리디렉트
     return "redirect:/";
   }
+
 
   @GetMapping("/downloads")
   public String showFiles(Model model, HttpSession session) {
