@@ -30,10 +30,10 @@ public class FileController {
   @Value("${upload.path}")
   private String uploadPath;
 
-  @GetMapping("/")
-  public String index(HttpSession session) {
-    session.setAttribute("files", new ArrayList<String>()); // 초기화
-    return "uploadForm";
+  @GetMapping("/upload")
+  public String showUploadForm(HttpSession session) {
+    session.setAttribute("files", new ArrayList<String>()); // 파일 목록 초기화
+    return "uploadForm"; // uploadForm.html 반환
   }
 
   @PostMapping("/upload")
@@ -42,7 +42,6 @@ public class FileController {
       Path path = Paths.get(uploadPath + file.getOriginalFilename());
       Files.copy(file.getInputStream(), path);
 
-      // 세션에서 파일 목록 가져오기
       List<String> files = (List<String>) session.getAttribute("files");
       if (files == null) {
         files = new ArrayList<>();
@@ -59,10 +58,9 @@ public class FileController {
 
   @GetMapping("/downloads")
   public String showFiles(Model model, HttpSession session) {
-    // 세션에서 파일 목록을 가져와서 모델에 추가
     List<String> files = (List<String>) session.getAttribute("files");
     model.addAttribute("files", files);
-    return "download";
+    return "download"; // 다운로드 페이지 뷰 반환
   }
 
   @GetMapping("/download")
