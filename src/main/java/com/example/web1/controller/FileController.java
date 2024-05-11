@@ -1,6 +1,7 @@
 package com.example.web1.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -30,38 +31,52 @@ public class FileController {
   private String uploadPath;
 
   @GetMapping("/")
-  public String index() {
-    return "uploadForm";  // Thymeleaf 템플릿 이름 반환
+  public String index(HttpSession session) {
+    session.setAttribute("files", new ArrayList<String>()); // 초기화
+    return "uploadForm";
   }
 
   @PostMapping("/upload")
-  public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+  public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, HttpSession session) {
     try {
       Path path = Paths.get(uploadPath + file.getOriginalFilename());
       Files.copy(file.getInputStream(), path);
+
+      // 세션에서 파일 목록 가져오기
+      List<String> files = (List<String>) session.getAttribute("files");
+      if (files == null) {
+        files = new ArrayList<>();
+        session.setAttribute("files", files);
+      }
+      files.add(file.getOriginalFilename());
       redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + file.getOriginalFilename());
     } catch (Exception e) {
       e.printStackTrace();
       redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
     }
-    return "redirect:/";
+    return "redirect:/downloads"; // 업로드 후 다운로드 페이지로 리디렉트
+  }
+
+  @GetMapping("/downloads")
+  public String showFiles(Model model, HttpSession session) {
+    // 세션에서 파일 목록을 가져와서 모델에 추가
+    List<String> files = (List<String>) session.getAttribute("files");
+    model.addAttribute("files", files);
+    return "download";
   }
 
   @GetMapping("/download")
-  public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename, HttpServletResponse response) {
+  public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename) {
     try {
       Path filePath = Paths.get(uploadPath).resolve(filename).normalize();
       Resource resource = new UrlResource(filePath.toUri());
       if (!resource.exists() || !resource.isReadable()) {
         throw new RuntimeException("파일을 읽을 수 없습니다.: " + filename);
       }
-
-      // 파일 MIME 타입 추정
       String mimeType = Files.probeContentType(filePath);
       if (mimeType == null) {
-        mimeType = "application/octet-stream"; // 기본값
+        mimeType = "application/octet-stream";
       }
-
       return ResponseEntity.ok()
         .contentType(MediaType.parseMediaType(mimeType))
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
@@ -69,37 +84,5 @@ public class FileController {
     } catch (Exception e) {
       throw new RuntimeException("오류: " + e.getMessage());
     }
-  }
-
-
-
-  @GetMapping("/downloads")
-  public String showFiles(Model model) {
-    List<String> fileList = new ArrayList<>();
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(uploadPath))) {
-      for (Path entry : stream) {
-        fileList.add(entry.getFileName().toString());
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    model.addAttribute("files", fileList);
-    return "download";
-  }
-
-
-  // 파일 목록을 불러오는 메서드 추가
-  @GetMapping("/files")
-  public String listUploadedFiles(Model model) {
-    List<String> fileList = new ArrayList<>();
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(uploadPath))) {
-      for (Path entry : stream) {
-        fileList.add(entry.getFileName().toString());
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    model.addAttribute("files", fileList);
-    return "uploadForm";
   }
 }
