@@ -31,35 +31,43 @@ public class FileController {
   private String uploadPath;
 
   @GetMapping("/")
-  public String index(HttpSession session) {
-    session.setAttribute("files", new ArrayList<String>()); // 초기화
+  public String index(Model model, HttpSession session) {
+    List<String> files = (List<String>) session.getAttribute("files");
+    if (files == null) {
+      files = new ArrayList<>();
+      session.setAttribute("files", files);
+    }
+    model.addAttribute("files", files);
     return "uploadForm";
   }
 
-  @PostMapping("/upload")
-  public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, HttpSession session) {
-    try {
-      Path path = Paths.get(uploadPath + file.getOriginalFilename());
-      Files.copy(file.getInputStream(), path);
 
-      // 세션에서 파일 목록 가져오기
-      List<String> files = (List<String>) session.getAttribute("files");
-      if (files == null) {
-        files = new ArrayList<>();
-        session.setAttribute("files", files);
-      }
-      files.add(file.getOriginalFilename());
-      redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + file.getOriginalFilename());
-    } catch (Exception e) {
-      e.printStackTrace();
-      redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
+  @PostMapping("/upload")
+  public String handleFileUpload(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes, HttpSession session) {
+    List<String> uploadedFiles = (List<String>) session.getAttribute("files");
+    if (uploadedFiles == null) {
+      uploadedFiles = new ArrayList<>();
+      session.setAttribute("files", uploadedFiles);
     }
-    return "redirect:/downloads"; // 업로드 후 다운로드 페이지로 리디렉트
+
+    for (MultipartFile file : files) {
+      if (file.isEmpty()) continue;  // 비어 있는 파일은 무시
+      try {
+        Path path = Paths.get(uploadPath + file.getOriginalFilename());
+        Files.copy(file.getInputStream(), path);
+        uploadedFiles.add(file.getOriginalFilename());
+        redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + file.getOriginalFilename());
+      } catch (Exception e) {
+        e.printStackTrace();
+        redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
+      }
+    }
+    // 업로드 후 현재 페이지로 리디렉트
+    return "redirect:/";
   }
 
   @GetMapping("/downloads")
   public String showFiles(Model model, HttpSession session) {
-    // 세션에서 파일 목록을 가져와서 모델에 추가
     List<String> files = (List<String>) session.getAttribute("files");
     model.addAttribute("files", files);
     return "download";
