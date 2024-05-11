@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>파일 업로드</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="file.css">
+</head>
+<body>
+<div class="container">
+  <h1>파일 업로드</h1>
+  <form method="POST" enctype="multipart/form-data" action="/upload">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+  </form>
+  <p th:if="${message}" th:text="${message}"></p>
+  <h2>교수용</h2>
+  <ul>
+    <li th:each="file : ${files}">
+      <a th:href="@{'/download?filename=' + ${file}}" th:text="${file}">Download</a>
+    </li>
+  </ul>
+  <div>
+    <a href="/downloads" style="margin-top: 20px; display: inline-block;">다운로드 페이지로 이동</a>
+  </div>
+</div>
+</body>
+</html>
