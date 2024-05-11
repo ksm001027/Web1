@@ -1,6 +1,5 @@
 package com.example.web1.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,18 +26,6 @@ public class FileController {
 
   @Value("${upload.path}")
   private String uploadPath;
-
-  @GetMapping("/")
-  public String index(Model model, HttpSession session) {
-    List<String> files = (List<String>) session.getAttribute("files");
-    if (files == null) {
-      files = new ArrayList<>();
-      session.setAttribute("files", files);
-    }
-    model.addAttribute("files", files);
-    return "uploadForm";
-  }
-
 
   @PostMapping("/upload")
   public String handleFileUpload(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes, HttpSession session) {
@@ -75,11 +60,8 @@ public class FileController {
         redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
       }
     }
-
-    // 업로드 후 현재 페이지로 리디렉트
     return "redirect:/";
   }
-
 
   @GetMapping("/downloads")
   public String showFiles(Model model, HttpSession session) {
@@ -107,5 +89,10 @@ public class FileController {
     } catch (Exception e) {
       throw new RuntimeException("오류: " + e.getMessage());
     }
+  }
+
+  @GetMapping("/uploadForm")
+  public String showUploadForm() {
+    return "uploadForm";  // Thymeleaf가 처리할 수 있도록 뷰 이름 반환
   }
 }
