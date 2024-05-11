@@ -82,7 +82,7 @@ function submitQuiz(event) {
     }]
   };
 
-  fetch('/api/quiz', {
+  fetch('http://localhost:8080/api/quiz', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -1,17 +1,16 @@
-// express 모듈과 mysql 모듈을 가져옵니다.
 const express = require('express');
 const mysql = require('mysql');
+const cors = require('cors');
 
-// Express 애플리케이션을 생성합니다.
 const app = express();
-app.use(express.json()); // JSON 파싱 미들웨어 사용
+app.use(express.json());
+app.use(cors());
 
-// DB 연결 설정
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '3192',
-  database: 'kingjinpan'
+  password: '0000',
+  database: 'project'
 });
 
 db.connect(err => {
@@ -22,7 +21,6 @@ db.connect(err => {
   console.log('Database connection established');
 });
 
-// 퀴즈 생성 API
 app.post('/api/quiz', (req, res) => {
   console.log('Received quiz data:', req.body);
   const { quizName, questions } = req.body;
@@ -34,7 +32,6 @@ app.post('/api/quiz', (req, res) => {
     }
     const quizId = quizResults.insertId;
 
-    let pendingQuestions = questions.length;
     questions.forEach(question => {
       const { text, type, options, correctAnswer } = question;
       db.query('INSERT INTO Quiz_Question (QuizID, Quiz_QuestionText, Quiz_QuestionType) VALUES (?, ?, ?)',
@@ -44,34 +41,31 @@ app.post('/api/quiz', (req, res) => {
             return res.status(500).send({ message: 'Failed to add questions' });
           }
           const questionId = questionResults.insertId;
-          if (type === 'objective') {
-            options.forEach(option => {
-              db.query('INSERT INTO Quiz_Option (Quiz_QuestionID, Quiz_OptionText) VALUES (?, ?)',
-                [questionId, option], (err) => {
-                  if (err) {
-                    console.error('Error inserting option:', err);
-                    return;
-                  }
-                });
-            });
-          }
-          db.query('INSERT INTO Quiz_Answer (Quiz_QuestionID, CorrectAnswer) VALUES (?, ?)',
-            [questionId, correctAnswer], (err) => {
-              if (err) {
-                console.error('Error inserting answer:', err);
-                return;
-              }
-              pendingQuestions--;
-              if (pendingQuestions === 0) {
-                res.send({ message: 'Quiz created successfully', quizId: quizId });
-              }
-            });
+          handleOptionsAndAnswers(questionId, type, options, correctAnswer, res);
         });
     });
   });
 });
 
-// 퀴즈 데이터 불러오기 API
+function handleOptionsAndAnswers(questionId, type, options, correctAnswer, res) {
+  if (type === 'objective') {
+    options.forEach(option => {
+      db.query('INSERT INTO Quiz_Option (Quiz_QuestionID, Quiz_OptionText) VALUES (?, ?)', [questionId, option], err => {
+        if (err) {
+          console.error('Error inserting option:', err);
+          return res.status(500).send({ message: 'Error inserting options' });
+        }
+      });
+    });
+  }
+  db.query('INSERT INTO Quiz_Answer (Quiz_QuestionID, CorrectAnswer) VALUES (?, ?)', [questionId, correctAnswer], err => {
+    if (err) {
+      console.error('Error inserting answer:', err);
+      return res.status(500).send({ message: 'Error inserting answer' });
+    }
+  });
+}
+
 app.get('/api/quiz', (req, res) => {
   db.query('SELECT * FROM Quiz_Question', (err, results) => {
     if (err) {
@@ -86,11 +80,6 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Quiz Server');
 });
 
-const cors = require('cors');
-app.use(cors());
-
-
-// 포트 3000에서 서버 실행
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
