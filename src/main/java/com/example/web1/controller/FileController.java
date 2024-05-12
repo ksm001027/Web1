@@ -27,37 +27,12 @@ public class FileController {
   @Value("${upload.path}")
   private String uploadPath;
 
-<<<<<<< HEAD
-  @GetMapping("/upload")
-  public String showUploadForm(HttpSession session) {
-    session.setAttribute("files", new ArrayList<String>()); // 파일 목록 초기화
-    return "uploadForm"; // uploadForm.html 반환
-  }
-
-  @PostMapping("/upload")
-  public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, HttpSession session) {
-    try {
-      Path path = Paths.get(uploadPath + file.getOriginalFilename());
-      Files.copy(file.getInputStream(), path);
-
-      List<String> files = (List<String>) session.getAttribute("files");
-      if (files == null) {
-        files = new ArrayList<>();
-        session.setAttribute("files", files);
-      }
-      files.add(file.getOriginalFilename());
-      redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + file.getOriginalFilename());
-    } catch (Exception e) {
-      e.printStackTrace();
-      redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
-=======
   @PostMapping("/upload")
   public String handleFileUpload(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes, HttpSession session) {
     List<String> uploadedFiles = (List<String>) session.getAttribute("files");
     if (uploadedFiles == null) {
       uploadedFiles = new ArrayList<>();
       session.setAttribute("files", uploadedFiles);
->>>>>>> 8161ea90530f3c65cdfb35b8ed7111d94e2ffc04
     }
 
     for (MultipartFile file : files) {
@@ -85,14 +60,14 @@ public class FileController {
         redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
       }
     }
-    return "redirect:/";
+    return "uploadForm";
   }
 
   @GetMapping("/downloads")
   public String showFiles(Model model, HttpSession session) {
     List<String> files = (List<String>) session.getAttribute("files");
     model.addAttribute("files", files);
-    return "download"; // 다운로드 페이지 뷰 반환
+    return "download";
   }
 
   @GetMapping("/download")
