@@ -21,6 +21,11 @@ public class WebController {
     return "quiz1";  // 'quizchoice.html'을 렌더링
   }
 
+  @GetMapping("/quiz1Take")
+  public String showquiz1Take() {
+    return "quiz1Take";  // 'quizchoice.html'을 렌더링
+  }
+
   @GetMapping("/quiz2")
   public String showQuiz2() {
     return "quiz2";  // 'quizchoice.html'을 렌더링

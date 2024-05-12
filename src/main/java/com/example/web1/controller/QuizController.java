@@ -52,10 +52,11 @@ public class QuizController {
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "주관식 퀴즈가 성공적으로 등록되었습니다!");
-      return "redirect:/quiz/success";
+      return "redirect:/quiz/quiz1Take"; // 변경된 경로
     } else {
       redirectAttributes.addFlashAttribute("message", "주관식 퀴즈 등록에 실패하였습니다.");
       return "redirect:/quiz/failure";
     }
   }
+
 }
