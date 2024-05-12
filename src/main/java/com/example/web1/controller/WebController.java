@@ -11,11 +11,20 @@ public class WebController {
     return "index";  // Thymeleaf가 'index.html'을 렌더링
   }
 
-  // /uploadForm 매핑 제거
-  // @GetMapping("/uploadForm")
-  // public String showUploadForm() {
-  //   return "uploadForm";  // 'uploadForm.html'을 렌더링
-  // }
+  @GetMapping("/quizchoice")
+  public String showQuizChoice() {
+    return "quizchoice";  // 'quizchoice.html'을 렌더링
+  }
+
+  @GetMapping("/quiz1")
+  public String showQuiz1() {
+    return "quiz1";  // 'quizchoice.html'을 렌더링
+  }
+
+  @GetMapping("/quiz2")
+  public String showQuiz2() {
+    return "quiz2";  // 'quizchoice.html'을 렌더링
+  }
 
   @GetMapping("/quiz")
   public String showQuizPage() {
@@ -31,4 +40,6 @@ public class WebController {
   public String showChatPage() {
     return "HTML/chat";  // 'chat.html'을 렌더링
   }
+
+
 }

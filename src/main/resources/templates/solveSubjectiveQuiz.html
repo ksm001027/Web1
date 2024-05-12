@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주관식 퀴즈 풀기</title>
+</head>
+<body>
+<h1>주관식 퀴즈 풀기</h1>
+<form action="/quiz/solveSubjective" method="POST">
+  <input type="hidden" name="quizId" value="{{ quizId }}">
+  <p>{{ question }}</p>
+  <label for="answer">정답 입력:</label>
+  <input type="text" id="answer" name="answer" required>
+  <button type="submit">퀴즈 제출</button>
+</form>
+</body>
+</html>

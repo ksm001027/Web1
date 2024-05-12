@@ -60,7 +60,9 @@ public class FileController {
         redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
       }
     }
-    return "redirect:/";
+
+    // 업로드 후 업로드 폼 페이지로 리디렉트
+    return "redirect:/uploadForm";
   }
 
   @GetMapping("/downloads")
@@ -91,8 +93,22 @@ public class FileController {
     }
   }
 
-  @GetMapping("/uploadForm")
-  public String showUploadForm() {
-    return "uploadForm";  // Thymeleaf가 처리할 수 있도록 뷰 이름 반환
+  @GetMapping("/fileIndex")
+  public String index(Model model, HttpSession session) {
+    session.setAttribute("files", new ArrayList<String>());  // 파일 목록 초기화
+    return "index";  // index 페이지를 반환
   }
+
+
+  @GetMapping("/uploadForm")
+  public String showUploadForm (Model model, HttpSession session){
+    List<String> files = (List<String>) session.getAttribute("files");
+    if (files == null) {
+      files = new ArrayList<>();
+    }
+    model.addAttribute("files", files);
+    return "uploadForm";
+  }
+
+
 }

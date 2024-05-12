@@ -10,10 +10,11 @@
 <body>
 <h1>기능 선택</h1>
 <div class="menu-container">
-  <a th:href="@{/HTML/quiz.html}" class="menu-button">퀴즈</a>  <!-- Thymeleaf로 처리 -->
+  <a th:href="@{/quizchoice}" class="menu-button">퀴즈</a>  <!-- Thymeleaf로 처리하여 quizchoice.html로 연결 -->
   <a th:href="@{/HTML/survey.html}" class="menu-button">설문조사</a>
-  <a th:href="@{/uploadForm}" class="menu-button">파일 배포</a>  <!-- 업로드 폼으로 이동 -->
+  <a th:href="@{/uploadForm}" class="menu-button">파일 배포</a>
   <a th:href="@{/HTML/chat.html}" class="menu-button">실시간 챗</a>
 </div>
+
 </body>
 </html>
