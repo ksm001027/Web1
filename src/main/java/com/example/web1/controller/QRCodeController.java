@@ -21,7 +21,7 @@ public class QRCodeController {
   @GetMapping("/generate-qr")
   public ResponseEntity<byte[]> generateQRCode() {
     try {
-      String qrText = "http://43.202.1.74:8080/downloads"; // 이 URL을 QR 코드로 변환
+      String qrText = "http://your-server-address/chat-room"; // 서버 URL을 QR 코드로 변환
       int width = 350;
       int height = 350;
       Map<EncodeHintType, Object> hints = new HashMap<>();
