@@ -23,8 +23,16 @@ public class QRCodeController {
   @GetMapping(value = "/generate-qr", produces = MediaType.IMAGE_PNG_VALUE)
   public ResponseEntity<byte[]> generateQRCode(@RequestParam("url") String url) {
     try {
+<<<<<<< HEAD
       QRCodeWriter qrCodeWriter = new QRCodeWriter();
       BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 200, 200);
+=======
+      String qrText = "http://your-server-address/chat-room"; // 서버 URL을 QR 코드로 변환
+      int width = 350;
+      int height = 350;
+      Map<EncodeHintType, Object> hints = new HashMap<>();
+      hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+>>>>>>> 5d00fc583662fd6dbf8d422fbe39e56991a438f9
 
       ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
       MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);

@@ -1,4 +1,3 @@
-/* file.css */
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -14,7 +13,7 @@ body {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 600px;
   text-align: center;
@@ -53,4 +52,35 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* 반응형 디자인 추가 */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 15px;
+    width: 90%;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+  }
+
+  input[type="file"] {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding: 10px;
+  }
+
+  button {
+    padding: 8px;
+  }
 }

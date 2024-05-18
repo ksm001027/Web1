@@ -3,18 +3,22 @@ body {
   margin: 40px;
   background-color: #f4f4f9;
 }
+
 h1 {
   color: #333;
   text-align: center;
 }
+
 .upload-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
+
 input[type="file"] {
   margin-right: 10px;
 }
+
 button {
   background-color: #5c67f2;
   color: white;
@@ -23,6 +27,28 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #5058e2;
+}
+
+/* 화면이 작은 경우 스타일 조정 */
+@media (max-width: 600px) {
+  body {
+    margin: 20px;
+  }
+
+  .upload-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  input[type="file"] {
+    margin: 0 0 10px 0;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+  }
 }

@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebController {
 
-  @GetMapping("/")
-  public String showIndex() {
-    return "index";  // Thymeleaf가 'index.html'을 렌더링
+  @GetMapping("/menu")
+  public String menu() {
+    return "menu"; // menu.html (기능 선택 페이지)
   }
 
   @GetMapping("/quizchoice")
@@ -46,5 +46,8 @@ public class WebController {
     return "HTML/chat";  // 'chat.html'을 렌더링
   }
 
+  @GetMapping("/login")
+  public String login() { return "index"; // index.html (로그인 페이지)
+  }
 
 }
