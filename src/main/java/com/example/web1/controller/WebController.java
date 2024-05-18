@@ -46,5 +46,8 @@ public class WebController {
     return "HTML/chat";  // 'chat.html'을 렌더링
   }
 
+  @GetMapping("/login")
+  public String login() { return "index"; // index.html (로그인 페이지)
+  }
 
 }
