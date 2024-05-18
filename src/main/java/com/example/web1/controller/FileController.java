@@ -60,13 +60,9 @@ public class FileController {
         redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
       }
     }
-<<<<<<< HEAD
-    return "uploadForm";
-=======
 
     // 업로드 후 업로드 폼 페이지로 리디렉트
     return "redirect:/uploadForm";
->>>>>>> 573325095f1079713b586bbb69cc0372aaac3f06
   }
 
   @GetMapping("/downloads")

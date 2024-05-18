@@ -5,6 +5,36 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" th:href="@{/css/file.css}"/> <!-- CSS 참조 -->
+  <script>
+    function uploadFile() {
+      const formData = new FormData(document.getElementById('uploadForm'));
+      fetch('/upload', {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const link = document.createElement('a');
+            link.href = data.filePath;
+            link.textContent = '다운로드: ' + data.fileName;
+            link.download = data.fileName;
+            document.getElementById('downloadLinkContainer').appendChild(link);
+          } else {
+            alert('파일 업로드 실패');
+          }
+        })
+        .catch(error => console.error('Error uploading file:', error));
+    }
+
+    function generateQRCode() {
+      const currentURL = window.location.href;
+      const qrImage = document.getElementById('qrImage');
+      qrImage.src = '/generate-qr?url=' + encodeURIComponent(currentURL);
+    }
+
+    window.onload = generateQRCode;
+  </script>
 </head>
 <body>
 <div class="container">
@@ -14,9 +44,17 @@
       <a th:href="@{'/download?filename=' + ${file}}" th:text="${file}">Download Link</a>
     </li>
   </ul>
+
+  <!-- 파일 업로드 폼 -->
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="button" onclick="uploadFile()">업로드</button>
+  </form>
+  <div id="downloadLinkContainer"></div>
+
   <!-- 실시간으로 생성된 QR 코드 이미지를 보여주는 부분 -->
   <div>
-    <img src="/generate-qr" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
+    <img id="qrImage" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
   </div>
 </div>
 </body>
