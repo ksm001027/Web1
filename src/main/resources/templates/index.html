@@ -10,15 +10,18 @@
 <h1>로그인</h1>
 <form th:action="@{/login}" method="post">
   <div>
-    <label for="username">사용자 이름:</label>
-    <input type="text" id="username" name="username">
+    <label for="userID">사용자 ID:</label>
+    <input type="text" id="userID" name="username" required>
   </div>
   <div>
     <label for="password">비밀번호:</label>
-    <input type="password" id="password" name="password">
+    <input type="password" id="password" name="password" required>
   </div>
   <div>
     <button type="submit">로그인</button>
+  </div>
+  <div th:if="${param.error}">
+    <p style="color:red;">로그인에 실패했습니다. 다시 시도하세요.</p>
   </div>
 </form>
 </body>
