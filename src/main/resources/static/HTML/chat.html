@@ -11,9 +11,15 @@
 <div id="chat-room">
   <div id="messages" class="messages"></div>
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
-  <button onclick="sendMessage()">전송</button>
-  <!-- QR 코드를 표시할 요소 추가 -->
-  <img id="qrcode" style="position: fixed; right: 20px; bottom: 20px;" alt="QR Code">
+  <div class="button-container">
+    <button onclick="sendMessage()">전송</button>
+    <button id="showQRButton" onclick="toggleQRCode()">QR 보기</button>
+  </div>
+  <!-- QR 코드를 표시할 요소 -->
+  <div id="qrcode-container" class="qrcode-container">
+    <img id="qrcode" alt="QR Code">
+    <button id="hideQRButton" class="close-button" onclick="toggleQRCode()">X</button>
+  </div>
 </div>
 <script src="../js/chat.js"></script>
 <script>
@@ -28,9 +34,20 @@
       .catch(error => console.error('Error fetching QR code:', error));
   }
 
-  // 페이지 로드 시 QR 코드 가져오기
+  // QR 코드 표시/숨기기 토글 함수
+  function toggleQRCode() {
+    const qrCodeContainer = document.getElementById('qrcode-container');
+    if (qrCodeContainer.style.display === 'none' || qrCodeContainer.style.display === '') {
+      fetchQRCode();
+      qrCodeContainer.style.display = 'block';
+    } else {
+      qrCodeContainer.style.display = 'none';
+    }
+  }
+
+  // 초기에는 QR 코드를 숨김
   window.onload = function() {
-    fetchQRCode();
+    document.getElementById('qrcode-container').style.display = 'none';
   };
 </script>
 </body>
