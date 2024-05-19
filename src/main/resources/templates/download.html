@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container">
-  <h1>다운로드 업로드 파일</h1>
+  <h1>파일 다운로드</h1>
   <ul>
     <li th:each="file : ${files}">
       <a th:href="@{'/download?filename=' + ${file}}" th:text="${file}">Download Link</a>
