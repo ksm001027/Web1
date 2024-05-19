@@ -12,9 +12,10 @@ public class QuizService {
 
   @Autowired
   private ObjectiveQuizRepository objectiveQuizRepository;
-
   @Autowired
   private SubjectiveQuizRepository subjectiveQuizRepository;
+  @Autowired
+  private UserRepository userRepository;
 
   public boolean saveObjectiveQuiz(ObjectiveQuiz quiz) {
     try {
@@ -34,4 +35,19 @@ public class QuizService {
     }
   }
 
+  public SubjectiveQuiz findSubjectiveQuizById(Long quizId) {
+    return subjectiveQuizRepository.findById(quizId).orElse(null);
+  }
+
+  public boolean checkSubjectiveAnswer(Long quizId, String userAnswer) {
+    SubjectiveQuiz quiz = findSubjectiveQuizById(quizId);
+    if (quiz != null && quiz.getAnswer().equalsIgnoreCase(userAnswer.trim())) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean authenticateUser(String username, String password) {
+    return userRepository.findByUsernameAndPassword(username, password).isPresent();
+  }
 }
