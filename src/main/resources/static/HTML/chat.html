@@ -6,8 +6,6 @@
   <link rel="stylesheet" href="../css/chat.css">
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
-  <!-- QR 코드 라이브러리 추가 -->
-  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 </head>
 <body>
 <div id="chat-room">
@@ -15,8 +13,25 @@
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
   <button onclick="sendMessage()">전송</button>
   <!-- QR 코드를 표시할 요소 추가 -->
-  <div id="qrcode" style="position: fixed; right: 20px; bottom: 20px;"></div>
+  <img id="qrcode" style="position: fixed; right: 20px; bottom: 20px;" alt="QR Code">
 </div>
 <script src="../js/chat.js"></script>
+<script>
+  // 서버에서 QR 코드를 가져와서 표시하는 함수
+  function fetchQRCode() {
+    fetch('/generate-qr')
+      .then(response => response.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        document.getElementById('qrcode').src = url;
+      })
+      .catch(error => console.error('Error fetching QR code:', error));
+  }
+
+  // 페이지 로드 시 QR 코드 가져오기
+  window.onload = function() {
+    fetchQRCode();
+  };
+</script>
 </body>
 </html>
