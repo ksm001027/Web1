@@ -11,6 +11,7 @@
 <body>
 <div id="chat-room">
   <div id="messages" class="messages"></div>
+  <input type="text" id="usernameInput" placeholder="이름을 입력하시오">
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
   <div class="button-container">
     <button onclick="sendMessage()">전송</button>
@@ -39,7 +40,9 @@
   function toggleQRCode() {
     const qrCodeContainer = document.getElementById('qrcode-container');
     if (qrCodeContainer.style.display === 'none' || qrCodeContainer.style.display === '') {
-      fetchQRCode();
+      if (!document.getElementById('qrcode').hasChildNodes()) {
+        fetchQRCode();
+      }
       qrCodeContainer.style.display = 'block';
     } else {
       qrCodeContainer.style.display = 'none';

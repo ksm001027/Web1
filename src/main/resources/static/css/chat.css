@@ -25,6 +25,9 @@ body {
   padding: 20px;
   overflow-y: auto;
   background: #e9eff1;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 모든 메시지를 가운데 정렬 */
 }
 
 .message {
@@ -35,20 +38,20 @@ body {
   width: fit-content;
   max-width: 80%;
   word-wrap: break-word;
+  text-align: center; /* 텍스트를 가운데 정렬 */
 }
 
 .my-message {
   background-color: #34B7F1;
-  align-self: flex-end;
 }
 
 .their-message {
   background-color: #0078D7;
-  align-self: flex-start;
 }
 
 .sender {
-  font-size: 12px;
+  font-size: 20px; /* 폰트 크기 */
+  font-weight: bold; /* 폰트 굵기 */
   color: #ccc;
 }
 

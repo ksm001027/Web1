@@ -9,6 +9,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
@@ -19,15 +20,14 @@ import java.util.Map;
 public class QRCodeController {
 
   @GetMapping("/generate-qr")
-  public ResponseEntity<byte[]> generateQRCode() {
+  public ResponseEntity<byte[]> generateQRCode(@RequestParam String url) {
     try {
-      String qrText = "http://your-server-address/chat-room"; // 서버 URL을 QR 코드로 변환
       int width = 350;
       int height = 350;
       Map<EncodeHintType, Object> hints = new HashMap<>();
       hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
-      BitMatrix bitMatrix = new MultiFormatWriter().encode(qrText, BarcodeFormat.QR_CODE, width, height, hints);
+      BitMatrix bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, width, height, hints);
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       MatrixToImageWriter.writeToStream(bitMatrix, "PNG", baos);
       byte[] qrImageBytes = baos.toByteArray();
