@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   var stompClient = null;
-  var username = "You"; // 사용자 이름을 실제 사용자 이름으로 설정하세요.
+  var username = null;
 
   function connect() {
     var socket = new SockJS('/chat');
@@ -10,10 +10,21 @@ document.addEventListener('DOMContentLoaded', function() {
       stompClient.subscribe('/topic/public', function (message) {
         showMessage(JSON.parse(message.body));
       });
+    }, function(error) {
+      console.error('STOMP error: ' + error);
     });
   }
 
   function sendMessage() {
+    if (!username) {
+      username = document.getElementById('usernameInput').value.trim();
+      if (!username) {
+        alert('이름을 입력하세요.');
+        return;
+      }
+      document.getElementById('usernameInput').readOnly = true;
+    }
+
     var messageContent = document.getElementById('messageInput').value.trim();
     if (messageContent && stompClient) {
       var chatMessage = {
@@ -67,10 +78,25 @@ document.addEventListener('DOMContentLoaded', function() {
   function toggleQRCode() {
     const qrCodeContainer = document.getElementById('qrcode-container');
     if (qrCodeContainer.style.display === 'none' || qrCodeContainer.style.display === '') {
+      if (!document.getElementById('qrcode').hasChildNodes()) {
+        fetchQRCode();
+      }
       qrCodeContainer.style.display = 'block';
     } else {
       qrCodeContainer.style.display = 'none';
     }
+  }
+
+  // QR 코드 생성 및 표시 함수
+  function fetchQRCode() {
+    const currentUrl = window.location.href;
+    fetch(`/generate-qr?url=${encodeURIComponent(currentUrl)}`)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        document.getElementById('qrcode').src = url;
+      })
+      .catch(error => console.error('Error fetching QR code:', error));
   }
 
   // QR 코드 버튼 이벤트 리스너

@@ -1,6 +1,7 @@
 package com.example.web1.controller;
 
-import jakarta.servlet.http.HttpSession;
+import com.example.web1.model.FileEntity;
+import com.example.web1.service.FileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,57 +18,37 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class FileController {
 
-  @Value("${upload.path}")
-  private String uploadPath;
+  @Value("${app.server.address}")
+  private String serverAddress;
+
+  private final FileService fileService;
+
+  public FileController(FileService fileService) {
+    this.fileService = fileService;
+  }
 
   @PostMapping("/upload")
-  public String handleFileUpload(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes, HttpSession session) {
-    List<String> uploadedFiles = (List<String>) session.getAttribute("files");
-    if (uploadedFiles == null) {
-      uploadedFiles = new ArrayList<>();
-      session.setAttribute("files", uploadedFiles);
+  public String handleFileUpload(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes) {
+    try {
+      for (MultipartFile file : files) {
+        fileService.saveFile(file);
+      }
+      redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!");
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
     }
 
-    for (MultipartFile file : files) {
-      if (file.isEmpty()) continue; // 비어 있는 파일은 무시
-
-      // 파일명 중복 처리
-      String originalFilename = file.getOriginalFilename();
-      String filename = originalFilename;
-      Path path = Paths.get(uploadPath + filename);
-      int count = 0;
-
-      // 같은 이름의 파일이 존재하면, 이름 변경
-      while (Files.exists(path)) {
-        count++;
-        filename = originalFilename.replaceAll("(?i)(\\.\\w+$)", "_" + count + "$1");
-        path = Paths.get(uploadPath + filename);
-      }
-
-      try {
-        Files.copy(file.getInputStream(), path);
-        uploadedFiles.add(filename);
-        redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!: " + filename);
-      } catch (Exception e) {
-        e.printStackTrace();
-        redirectAttributes.addFlashAttribute("message", "파일 업로드에 실패하였습니다.: " + e.getMessage());
-      }
-    }
-
-    // 업로드 후 업로드 폼 페이지로 리디렉트
     return "redirect:/uploadForm";
   }
 
   @GetMapping("/downloads")
-  public String showFiles(Model model, HttpSession session) {
-    List<String> files = (List<String>) session.getAttribute("files");
+  public String showFiles(Model model) {
+    List<FileEntity> files = fileService.getAllFiles();
     model.addAttribute("files", files);
     return "download";
   }
@@ -75,7 +56,7 @@ public class FileController {
   @GetMapping("/download")
   public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename) {
     try {
-      Path filePath = Paths.get(uploadPath).resolve(filename).normalize();
+      Path filePath = fileService.getFilePath(filename);
       Resource resource = new UrlResource(filePath.toUri());
       if (!resource.exists() || !resource.isReadable()) {
         throw new RuntimeException("파일을 읽을 수 없습니다.: " + filename);
@@ -93,22 +74,8 @@ public class FileController {
     }
   }
 
-  @GetMapping("/fileIndex")
-  public String index(Model model, HttpSession session) {
-    session.setAttribute("files", new ArrayList<String>());  // 파일 목록 초기화
-    return "index";  // index 페이지를 반환
-  }
-
-
   @GetMapping("/uploadForm")
-  public String showUploadForm (Model model, HttpSession session){
-    List<String> files = (List<String>) session.getAttribute("files");
-    if (files == null) {
-      files = new ArrayList<>();
-    }
-    model.addAttribute("files", files);
+  public String showUploadForm() {
     return "uploadForm";
   }
-
-
 }

@@ -25,6 +25,8 @@ body {
   padding: 20px;
   overflow-y: auto;
   background: #e9eff1;
+  display: flex;
+  flex-direction: column;
 }
 
 .message {
@@ -39,17 +41,19 @@ body {
 
 .my-message {
   background-color: #34B7F1;
-  align-self: flex-end;
+  align-self: flex-end; /* 오른쪽 정렬 */
 }
 
 .their-message {
   background-color: #0078D7;
-  align-self: flex-start;
+  align-self: flex-start; /* 왼쪽 정렬 */
 }
 
 .sender {
-  font-size: 12px;
+  font-size: 14px; /* 폰트 크기 */
+  font-weight: bold; /* 폰트 굵기 */
   color: #ccc;
+  text-align: left; /* 닉네임을 왼쪽 정렬 */
 }
 
 #messageInput, button {
