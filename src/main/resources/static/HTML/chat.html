@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Chat Room</title>
   <link rel="stylesheet" href="../css/chat.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
 </head>
@@ -13,7 +14,7 @@
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
   <div class="button-container">
     <button onclick="sendMessage()">전송</button>
-    <button id="showQRButton" onclick="toggleQRCode()">QR 보기</button>
+    <button id="showQRButton" onclick="toggleQRCode()">QR코드</button>
   </div>
   <!-- QR 코드를 표시할 요소 -->
   <div id="qrcode-container" class="qrcode-container">
@@ -25,7 +26,7 @@
 <script>
   // 서버에서 QR 코드를 가져와서 표시하는 함수
   function fetchQRCode() {
-    fetch('/generate-qr')
+    fetch('/generate-chat-qr')
       .then(response => response.blob())
       .then(blob => {
         const url = URL.createObjectURL(blob);

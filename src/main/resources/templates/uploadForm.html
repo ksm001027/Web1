@@ -4,6 +4,7 @@
   <title>파일 업로드</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link rel="stylesheet" type="text/css" th:href="@{/css/file.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
 </head>
 <body>
 <div class="container">
@@ -19,8 +20,9 @@
       <a th:href="@{'/download?filename=' + ${file}}" th:text="${file}">Download</a>
     </li>
   </ul>
-  <div>
-    <a href="/downloads" style="margin-top: 20px; display: inline-block;">다운로드 페이지로 이동</a>
+  <div class="button-container">
+    <a href="/downloads" class="button">다운로드 페이지로 이동</a>
+    <a href="/menu" class="button">메뉴로 이동</a>
   </div>
 </div>
 </body>
