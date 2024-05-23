@@ -6,11 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebController {
 
-  @GetMapping("/menu")
-  public String menu() {
-    return "menu"; // menu.html (기능 선택 페이지)
-  }
-
   @GetMapping("/quizchoice")
   public String showQuizChoice() {
     return "quizchoice";  // 'quizchoice.html'을 렌더링
@@ -46,8 +41,8 @@ public class WebController {
     return "HTML/chat";  // 'chat.html'을 렌더링
   }
 
-  @GetMapping("/login")
-  public String login() { return "index"; // index.html (로그인 페이지)
-  }
+  //@GetMapping("/login")
+  //public String login() { return "index"; // index.html (로그인 페이지)
+  //}
 
 }

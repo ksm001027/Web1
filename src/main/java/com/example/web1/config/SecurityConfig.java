@@ -3,10 +3,12 @@ package com.example.web1.config;
 import com.example.web1.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -14,36 +16,45 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+  private final UserService userService;
+
+  public SecurityConfig(UserService userService) {
+    this.userService = userService;
+  }
+
+  @Bean
+  public UserDetailsService userDetailsService() {
+    return userService;
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return NoOpPasswordEncoder.getInstance(); // 암호화하지 않음
+  }
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-      .authorizeRequests(authorizeRequests ->
+      .authorizeHttpRequests(authorizeRequests ->
         authorizeRequests
-          .requestMatchers("/login", "/css/**").permitAll()
+          .requestMatchers("/login", "/loginAction").permitAll()
           .anyRequest().authenticated()
       )
       .formLogin(formLogin ->
         formLogin
           .loginPage("/login")
-          .defaultSuccessUrl("/menu", true)
+          .defaultSuccessUrl("/menu")
           .permitAll()
       )
       .logout(logout ->
         logout
-          .logoutUrl("/logout")
-          .logoutSuccessUrl("/login")
           .permitAll()
       );
     return http.build();
   }
 
   @Bean
-  public UserDetailsService userDetailsService() {
-    return new UserService();
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
   }
 }

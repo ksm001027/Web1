@@ -7,12 +7,13 @@ import jakarta.persistence.Id;
 
 @Entity
 public class User {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long id; // 자동 증가 ID
 
-  private String userID;
-  private String password;
+  private String userID; // 사용자 아이디
+  private String userPassword; // 사용자 비밀번호
 
   // Getters and Setters
   public Long getId() {
@@ -31,11 +32,11 @@ public class User {
     this.userID = userID;
   }
 
-  public String getPassword() {
-    return password;
+  public String getUserPassword() {
+    return userPassword;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
+  public void setUserPassword(String userPassword) {
+    this.userPassword = userPassword;
   }
 }

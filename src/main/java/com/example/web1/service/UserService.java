@@ -1,14 +1,15 @@
 package com.example.web1.service;
 
-import com.example.web1.model.User;
-import com.example.web1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+import com.example.web1.model.User;
+import com.example.web1.repository.UserRepository;
+
+import java.util.Collections;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -16,23 +17,23 @@ public class UserService implements UserDetailsService {
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
+  public int login(String userID, String userPassword) {
+    User user = userRepository.findByUserID(userID);
+    if (user == null) {
+      return -1; // 존재하지 않는 아이디
+    } else if (!user.getUserPassword().equals(userPassword)) {
+      return 0; // 비밀번호 불일치
+    } else {
+      return 1; // 로그인 성공
+    }
+  }
 
   @Override
   public UserDetails loadUserByUsername(String userID) throws UsernameNotFoundException {
-    Optional<User> userOptional = userRepository.findByUserID(userID);
-    User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    return org.springframework.security.core.userdetails.User.withUsername(user.getUserID())
-      .password(user.getPassword())
-      .roles("USER") // 필요한 경우 사용자 역할 추가
-      .build();
-  }
-
-  public void saveUser(String userID, String password) {
-    User user = new User();
-    user.setUserID(userID);
-    user.setPassword(passwordEncoder.encode(password));
-    userRepository.save(user);
+    User user = userRepository.findByUserID(userID);
+    if (user == null) {
+      throw new UsernameNotFoundException("User not found");
+    }
+    return new org.springframework.security.core.userdetails.User(user.getUserID(), user.getUserPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
   }
 }
