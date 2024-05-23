@@ -21,8 +21,8 @@ public class WebController {
     return "chat"; // chat.html로 매핑
   }
 
-  @GetMapping("/menu")
-  public String menu() {
+  @GetMapping("/web-menu")
+  public String webMenu() {
     return "menu"; // menu.html (기능 선택 페이지)
   }
 
