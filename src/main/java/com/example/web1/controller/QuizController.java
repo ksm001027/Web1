@@ -5,10 +5,10 @@ import com.example.web1.model.SubjectiveQuiz;
 import com.example.web1.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.Optional;
+import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/quiz")
@@ -33,7 +33,7 @@ public class QuizController {
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "객관식 퀴즈가 성공적으로 등록되었습니다!");
-      return "redirect:/quiz/submitObjective";
+      return "redirect:/quiz/objectiveQuiz/" + quiz.getId(); // 퀴즈 ID로 이동
     } else {
       redirectAttributes.addFlashAttribute("message", "객관식 퀴즈 등록에 실패하였습니다.");
       return "redirect:/quiz/failure";
@@ -52,11 +52,62 @@ public class QuizController {
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "주관식 퀴즈가 성공적으로 등록되었습니다!");
-      return "redirect:/quiz/quiz1Take"; // 변경된 경로
+      return "redirect:/quiz/subjectiveQuiz/" + quiz.getId(); // 퀴즈 ID로 이동
     } else {
       redirectAttributes.addFlashAttribute("message", "주관식 퀴즈 등록에 실패하였습니다.");
       return "redirect:/quiz/failure";
     }
   }
 
+  @GetMapping("/subjectiveQuiz/{id}")
+  public String getSubjectiveQuiz(@PathVariable Long id, Model model) {
+    Optional<SubjectiveQuiz> quiz = quizService.getSubjectiveQuizById(id);
+    if (quiz.isPresent()) {
+      model.addAttribute("quiz", quiz.get());
+      return "subjectiveQuiz"; // subjectiveQuiz.html로 매핑
+    } else {
+      return "quizNotFound";
+    }
+  }
+
+  @PostMapping("/submitSubjectiveAnswer")
+  public String submitSubjectiveAnswer(@RequestParam Long quizId, @RequestParam String answer, RedirectAttributes redirectAttributes) {
+    Optional<SubjectiveQuiz> quiz = quizService.getSubjectiveQuizById(quizId);
+    if (quiz.isPresent()) {
+      if (quiz.get().getAnswer().equalsIgnoreCase(answer)) {
+        redirectAttributes.addFlashAttribute("result", "정답입니다!");
+      } else {
+        redirectAttributes.addFlashAttribute("result", "오답입니다. 다시 시도하세요.");
+      }
+      return "redirect:/quiz/subjectiveQuiz/" + quizId;
+    } else {
+      return "quizNotFound";
+    }
+  }
+
+  @GetMapping("/objectiveQuiz/{id}")
+  public String getObjectiveQuiz(@PathVariable Long id, Model model) {
+    Optional<ObjectiveQuiz> quiz = quizService.getObjectiveQuizById(id);
+    if (quiz.isPresent()) {
+      model.addAttribute("quiz", quiz.get());
+      return "objectiveQuiz"; // objectiveQuiz.html로 매핑
+    } else {
+      return "quizNotFound";
+    }
+  }
+
+  @PostMapping("/submitObjectiveAnswer")
+  public String submitObjectiveAnswer(@RequestParam Long quizId, @RequestParam int answer, RedirectAttributes redirectAttributes) {
+    Optional<ObjectiveQuiz> quiz = quizService.getObjectiveQuizById(quizId);
+    if (quiz.isPresent()) {
+      if (quiz.get().getCorrectAnswerIndex() == answer) {
+        redirectAttributes.addFlashAttribute("result", "정답입니다!");
+      } else {
+        redirectAttributes.addFlashAttribute("result", "오답입니다. 다시 시도하세요.");
+      }
+      return "redirect:/quiz/objectiveQuiz/" + quizId;
+    } else {
+      return "quizNotFound";
+    }
+  }
 }

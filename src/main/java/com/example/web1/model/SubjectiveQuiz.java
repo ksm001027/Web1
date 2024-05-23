@@ -1,7 +1,6 @@
 package com.example.web1.model;
 
 import jakarta.persistence.*;
-
 @Entity
 public class SubjectiveQuiz {
   @Id
