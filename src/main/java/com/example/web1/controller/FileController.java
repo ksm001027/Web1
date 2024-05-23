@@ -2,11 +2,8 @@ package com.example.web1.controller;
 
 import com.example.web1.model.FileEntity;
 import com.example.web1.service.FileService;
-<<<<<<< HEAD
 import lombok.RequiredArgsConstructor;
-=======
 import jakarta.servlet.http.HttpSession;
->>>>>>> da405b85f44fbeeb6b175400828fd63db45a0aa3
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

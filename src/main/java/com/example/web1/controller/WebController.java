@@ -10,8 +10,6 @@ import java.util.UUID;
 @Controller
 public class WebController {
 
-<<<<<<< HEAD
-=======
   @RequestMapping("/generate-random-chat")
   public String generateRandomChat() {
     String randomString = UUID.randomUUID().toString();
@@ -27,7 +25,6 @@ public class WebController {
   public String menu() {
     return "menu"; // menu.html (기능 선택 페이지)
   }
->>>>>>> da405b85f44fbeeb6b175400828fd63db45a0aa3
 
   @GetMapping("/quizchoice")
   public String showQuizChoice() {
