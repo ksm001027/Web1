@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>객관식 퀴즈</title>
+  <link rel="stylesheet" href="/css/quiz.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+</head>
+<body>
+<h1 th:text="${quiz.title}">퀴즈 제목</h1>
+<p th:text="${quiz.question}">퀴즈 질문</p>
+<form action="/quiz/submitObjectiveAnswer" method="POST">
+  <input type="hidden" name="quizId" th:value="${quiz.id}"/>
+  <div class="form-group">
+    <label for="option1">보기 1:</label>
+    <input type="radio" id="option1" name="answer" th:value="1" required>
+    <label th:for="option1" th:text="${quiz.option1}">보기 1</label>
+  </div>
+  <div class="form-group">
+    <label for="option2">보기 2:</label>
+    <input type="radio" id="option2" name="answer" th:value="2" required>
+    <label th:for="option2" th:text="${quiz.option2}">보기 2</label>
+  </div>
+  <div class="form-group">
+    <label for="option3">보기 3:</label>
+    <input type="radio" id="option3" name="answer" th:value="3" required>
+    <label th:for="option3" th:text="${quiz.option3}">보기 3</label>
+  </div>
+  <div class="form-group">
+    <label for="option4">보기 4:</label>
+    <input type="radio" id="option4" name="answer" th:value="4" required>
+    <label th:for="option4" th:text="${quiz.option4}">보기 4</label>
+  </div>
+  <button type="submit">정답 제출</button>
+</form>
+<div th:if="${result}">
+  <p th:text="${result}"></p>
+</div>
+</body>
+</html>

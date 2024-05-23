@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Chat Room</title>
-  <link rel="stylesheet" href="../css/chat.css">
+  <link rel="stylesheet" href="/css/chat.css">
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
@@ -23,36 +23,6 @@
     <button id="hideQRButton" class="close-button" onclick="toggleQRCode()">X</button>
   </div>
 </div>
-<script src="../js/chat.js"></script>
-<script>
-  // 서버에서 QR 코드를 가져와서 표시하는 함수
-  function fetchQRCode() {
-    fetch('/generate-chat-qr')
-      .then(response => response.blob())
-      .then(blob => {
-        const url = URL.createObjectURL(blob);
-        document.getElementById('qrcode').src = url;
-      })
-      .catch(error => console.error('Error fetching QR code:', error));
-  }
-
-  // QR 코드 표시/숨기기 토글 함수
-  function toggleQRCode() {
-    const qrCodeContainer = document.getElementById('qrcode-container');
-    if (qrCodeContainer.style.display === 'none' || qrCodeContainer.style.display === '') {
-      if (!document.getElementById('qrcode').hasChildNodes()) {
-        fetchQRCode();
-      }
-      qrCodeContainer.style.display = 'block';
-    } else {
-      qrCodeContainer.style.display = 'none';
-    }
-  }
-
-  // 초기에는 QR 코드를 숨김
-  window.onload = function() {
-    document.getElementById('qrcode-container').style.display = 'none';
-  };
-</script>
+<script src="/js/chat.js"></script>
 </body>
 </html>

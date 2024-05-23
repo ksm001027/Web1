@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function toggleQRCode() {
     const qrCodeContainer = document.getElementById('qrcode-container');
     if (qrCodeContainer.style.display === 'none' || qrCodeContainer.style.display === '') {
-      if (!document.getElementById('qrcode').hasChildNodes()) {
+      if (!document.getElementById('qrcode').src) {
         fetchQRCode();
       }
       qrCodeContainer.style.display = 'block';

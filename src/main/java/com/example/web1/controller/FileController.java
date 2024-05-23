@@ -1,5 +1,7 @@
 package com.example.web1.controller;
 
+import com.example.web1.model.FileEntity;
+import com.example.web1.service.FileService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
