@@ -1,20 +1,22 @@
 package com.example.web1.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "file_table")
 public class FileEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   private String filename;
   private String filepath;
 
-  // Getters and Setters
+  @ManyToOne
+  @JoinColumn(name = "member_id", nullable = false)
+  private MemberEntity member;
 
+  // Getters and Setters
   public Long getId() {
     return id;
   }
@@ -37,5 +39,13 @@ public class FileEntity {
 
   public void setFilepath(String filepath) {
     this.filepath = filepath;
+  }
+
+  public MemberEntity getMember() {
+    return member;
+  }
+
+  public void setMember(MemberEntity member) {
+    this.member = member;
   }
 }

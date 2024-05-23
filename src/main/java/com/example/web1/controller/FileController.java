@@ -2,6 +2,7 @@ package com.example.web1.controller;
 
 import com.example.web1.model.FileEntity;
 import com.example.web1.service.FileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -10,17 +11,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class FileController {
 
   @Value("${app.server.address}")
@@ -28,15 +29,18 @@ public class FileController {
 
   private final FileService fileService;
 
-  public FileController(FileService fileService) {
-    this.fileService = fileService;
-  }
-
   @PostMapping("/upload")
-  public String handleFileUpload(@RequestParam("files") MultipartFile[] files, RedirectAttributes redirectAttributes) {
+  public String handleFileUpload(@RequestParam("files") MultipartFile[] files, HttpSession session, RedirectAttributes redirectAttributes) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    System.out.println("Uploading files for memberId: " + memberId);
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
     try {
       for (MultipartFile file : files) {
-        fileService.saveFile(file);
+        fileService.saveFile(file, memberId);
       }
       redirectAttributes.addFlashAttribute("message", "파일 업로드에 성공하였습니다!");
     } catch (Exception e) {
@@ -47,14 +51,26 @@ public class FileController {
   }
 
   @GetMapping("/downloads")
-  public String showFiles(Model model) {
-    List<FileEntity> files = fileService.getAllFiles();
+  public String showFiles(HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    List<FileEntity> files = fileService.getFilesByMemberId(memberId);
     model.addAttribute("files", files);
+    model.addAttribute("memberId", memberId);
     return "download";
   }
 
   @GetMapping("/download")
-  public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename) {
+  public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename, HttpSession session) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      return ResponseEntity.status(401).body(null); // Unauthorized
+    }
+
     try {
       Path filePath = fileService.getFilePath(filename);
       Resource resource = new UrlResource(filePath.toUri());
@@ -75,7 +91,35 @@ public class FileController {
   }
 
   @GetMapping("/uploadForm")
-  public String showUploadForm() {
+  public String showUploadForm(HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    List<FileEntity> files = fileService.getFilesByMemberId(memberId);
+    model.addAttribute("files", files);
+    model.addAttribute("memberId", memberId);
     return "uploadForm";
+  }
+
+  @PostMapping("/delete")
+  public String deleteFile(@RequestParam("fileId") Long fileId, HttpSession session, RedirectAttributes redirectAttributes) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    System.out.println("Deleting file for memberId: " + memberId);
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    try {
+      fileService.deleteFile(fileId, memberId);
+      redirectAttributes.addFlashAttribute("message", "파일 삭제에 성공하였습니다!");
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute("message", "파일 삭제에 실패하였습니다.: " + e.getMessage());
+    }
+
+    return "redirect:/uploadForm";
   }
 }

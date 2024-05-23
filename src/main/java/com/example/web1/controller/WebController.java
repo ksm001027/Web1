@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebController {
 
-  @GetMapping("/menu")
-  public String menu() {
-    return "menu"; // menu.html (기능 선택 페이지)
-  }
 
   @GetMapping("/quizchoice")
   public String showQuizChoice() {

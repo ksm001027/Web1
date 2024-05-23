@@ -59,6 +59,27 @@ button:hover {
   background-color: #5058e2;
 }
 
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+li form button {
+  background-color: #dc3545;
+  padding: 5px 10px;
+  font-size: 12px;
+  margin-left: 10px;
+  border-radius: 4px;
+}
+
+li form button:hover {
+  background-color: #c82333;
+}
+
 /* 화면 비율에 따라 스타일 조정 */
 @media (max-width: 1200px) and (min-aspect-ratio: 3/2) {
   .button-container {

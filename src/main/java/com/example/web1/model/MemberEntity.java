@@ -13,7 +13,8 @@ public class MemberEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
-  private Long id;
+  @Column(name = "member_id")
+  private Long memberId;
 
   @Column(unique = true)
   private String memberEmail;
@@ -26,11 +27,10 @@ public class MemberEntity {
 
   public static MemberEntity toMemberEntity(MemberDTO memberDTO){
     MemberEntity memberEntity = new MemberEntity();
-    memberEntity.setId(memberDTO.getId());
+    memberEntity.setMemberId(memberDTO.getId());
     memberEntity.setMemberEmail(memberDTO.getMemberEmail());
     memberEntity.setMemberName(memberDTO.getMemberName());
     memberEntity.setMemberPassword(memberDTO.getMemberPassword());
     return memberEntity;
   }
-
 }
