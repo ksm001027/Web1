@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>다운로드 파일</title>
+  <title>파일 다운로드</title>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<<<<<<< HEAD
   <link rel="stylesheet" type="text/css" th:href="@{/css/file.css}"/> <!-- CSS 참조 -->
   <script>
     function uploadFile() {
@@ -35,15 +36,19 @@
 
     window.onload = generateQRCode;
   </script>
+=======
+  <link rel="stylesheet" type="text/css" th:href="@{/css/download.css}"/>
+>>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
 </head>
 <body>
-<div class="container">
-  <h1>다운로드 업로드 파일</h1>
+<div class="download-container">
+  <h1>파일 다운로드</h1>
   <ul>
     <li th:each="file : ${files}">
-      <a th:href="@{'/download?filename=' + ${file}}" th:text="${file}">Download Link</a>
+      <a th:href="@{'/download?filename=' + ${file.filename}}" th:text="${file.filename}">Download Link</a>
     </li>
   </ul>
+<<<<<<< HEAD
 
   <!-- 파일 업로드 폼 -->
   <form id="uploadForm" enctype="multipart/form-data">
@@ -53,6 +58,8 @@
   <div id="downloadLinkContainer"></div>
 
   <!-- 실시간으로 생성된 QR 코드 이미지를 보여주는 부분 -->
+=======
+>>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
   <div>
     <img id="qrImage" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
   </div>

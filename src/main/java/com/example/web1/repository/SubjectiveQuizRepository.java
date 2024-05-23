@@ -1,4 +1,3 @@
-// SubjectiveQuizRepository.java
 package com.example.web1.repository;
 
 import com.example.web1.model.SubjectiveQuiz;
@@ -7,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SubjectiveQuizRepository extends CrudRepository<SubjectiveQuiz, Long> {
-  // Custom query methods can be defined here.
 }

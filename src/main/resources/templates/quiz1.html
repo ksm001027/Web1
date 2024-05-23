@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>주관식 퀴즈 생성</title>
+  <title>주관식 퀴즈 등록</title>
   <link rel="stylesheet" href="/css/quiz.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
 </head>
 <body>
-<h1>주관식 퀴즈 생성</h1>
+<h1>주관식 퀴즈 등록</h1>
 <form action="/quiz/submitSubjective" method="POST">
   <div class="form-group">
     <label for="quizTitle">퀴즈 제목:</label>
@@ -21,9 +22,17 @@
     <label for="answer">정답:</label>
     <input type="text" id="answer" name="answer" required>
   </div>
+<<<<<<< HEAD
   <button type="submit">퀴즈 생성</button>
 
 </form>
 
+=======
+  <button type="submit">퀴즈 등록</button>
+</form>
+<div class="menu-button-container">
+  <a th:href="@{quizchoice}" class="menu-button"><퀴즈유형></퀴즈유형> 선택 페이지로 이동</a>
+</div>
+>>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
 </body>
 </html>

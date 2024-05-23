@@ -1,7 +1,13 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+=======
+<html lang="en">
+>>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
 <head>
+  <link rel="stylesheet" href="/css/index.css">
   <meta charset="UTF-8">
+<<<<<<< HEAD
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>로그인</title>
   <link rel="stylesheet" th:href="@{/css/index.css}">
@@ -22,5 +28,26 @@
     <p th:if="${message}" th:text="${message}" class="message"></p>
   </form>
 </div>
+=======
+  <title>login</title>
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+</head>
+<body>
+<form action="/member/login" method="post">
+  <div class="input-group">
+    <label for="memberEmail">이메일:</label>
+    <input type="text" id="memberEmail" name="memberEmail">
+  </div>
+  <div class="input-group">
+    <label for="memberPassword">비밀번호:</label>
+    <input type="password" id="memberPassword" name="memberPassword">
+  </div>
+  <input type="submit" value="로그인">
+  <div th:if="${loginError}" style="color: red; margin-top: 10px;">
+    <p th:text="${loginError}"></p>
+  </div>
+</form>
+>>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
 </body>
 </html>

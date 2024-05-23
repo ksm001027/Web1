@@ -3,24 +3,38 @@
 <head>
   <title>파일 업로드</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<<<<<<< HEAD
   <link rel="stylesheet" type="text/css" th:href="@{/css/file.css}"/> <!-- CSS 참조 -->
+=======
+  <link rel="stylesheet" type="text/css" th:href="@{/css/file.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+>>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
 </head>
 <body>
 <div class="container">
   <h1>파일 업로드</h1>
   <form method="POST" enctype="multipart/form-data" action="/upload">
-    <input type="file" name="files" multiple />
-    <button type="submit">Upload</button>
+    <div class="upload-container">
+      <input type="file" name="files" multiple />
+      <button type="submit">Upload</button>
+    </div>
   </form>
   <p th:if="${message}" th:text="${message}"></p>
+
   <h2>업로드된 파일 목록</h2>
   <ul>
     <li th:each="file : ${files}">
-      <a th:href="@{'/download?filename=' + ${file}}" th:text="${file}">Download</a>
+      <span th:text="${file.filename}">Filename</span>
+      <form method="post" th:action="@{/delete}" style="display:inline;">
+        <input type="hidden" name="fileId" th:value="${file.id}" />
+        <button type="submit">Delete</button>
+      </form>
     </li>
   </ul>
-  <div>
-    <a href="/downloads" style="margin-top: 20px; display: inline-block;">다운로드 페이지로 이동</a>
+
+  <div class="button-container">
+    <a href="/downloads" class="button">다운로드 페이지로 이동</a>
+    <a href="/menu" class="button">메뉴로 이동</a>
   </div>
 </div>
 </body>
