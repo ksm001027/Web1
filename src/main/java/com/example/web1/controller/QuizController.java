@@ -79,7 +79,7 @@ public class QuizController {
       } else {
         redirectAttributes.addFlashAttribute("result", "오답입니다. 다시 시도하세요.");
       }
-      return "redirect:/quiz/subjectiveQuiz/" + quizId;
+      return "redirect:/quiz/result";
     } else {
       return "quizNotFound";
     }
@@ -105,9 +105,14 @@ public class QuizController {
       } else {
         redirectAttributes.addFlashAttribute("result", "오답입니다. 다시 시도하세요.");
       }
-      return "redirect:/quiz/objectiveQuiz/" + quizId;
+      return "redirect:/quiz/result";
     } else {
       return "quizNotFound";
     }
+  }
+
+  @GetMapping("/result")
+  public String showResultPage() {
+    return "result"; // result.html로 매핑
   }
 }

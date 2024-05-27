@@ -60,4 +60,9 @@ public class WebController {
   public String login() {
     return "index"; // index.html (로그인 페이지)
   }
+
+  @GetMapping("/result")
+  public String showResultPage() {
+    return "result"; // result.html로 매핑
+  }
 }
