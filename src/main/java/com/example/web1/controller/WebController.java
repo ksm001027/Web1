@@ -21,8 +21,8 @@ public class WebController {
     return "chat"; // chat.html로 매핑
   }
 
-  @GetMapping("/menu")
-  public String menu() {
+  @GetMapping("/web-menu")
+  public String webMenu() {
     return "menu"; // menu.html (기능 선택 페이지)
   }
 
@@ -59,5 +59,10 @@ public class WebController {
   @GetMapping("/login")
   public String login() {
     return "index"; // index.html (로그인 페이지)
+  }
+
+  @GetMapping("/result")
+  public String showResultPage() {
+    return "result"; // result.html로 매핑
   }
 }

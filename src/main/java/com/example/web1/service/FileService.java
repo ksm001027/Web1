@@ -1,7 +1,10 @@
 package com.example.web1.service;
 
 import com.example.web1.model.FileEntity;
+import com.example.web1.model.MemberEntity;
 import com.example.web1.repository.FileRepository;
+import com.example.web1.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,54 +12,61 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FileService {
 
   @Value("${upload.path}")
   private String uploadPath;
 
   private final FileRepository fileRepository;
+  private final MemberRepository memberRepository;
 
-  private List<FileEntity> uploadedFiles = new ArrayList<>();
-
-  public FileService(FileRepository fileRepository) {
-    this.fileRepository = fileRepository;
-  }
-
-  public void saveFile(MultipartFile file) throws Exception {
+  public void saveFile(MultipartFile file, Long memberId) throws Exception {
+    System.out.println("Saving file for memberId: " + memberId); // 로그 추가
     String filename = file.getOriginalFilename();
     Path path = Paths.get(uploadPath, filename);
 
     Files.copy(file.getInputStream(), path);
 
+    MemberEntity member = memberRepository.findById(memberId)
+      .orElseThrow(() -> new RuntimeException("Member not found"));
+
     FileEntity fileEntity = new FileEntity();
     fileEntity.setFilename(filename);
     fileEntity.setFilepath(path.toString());
-    uploadedFiles.add(fileEntity);
+    fileEntity.setMember(member);
+
     fileRepository.save(fileEntity);
   }
 
   public List<FileEntity> getAllFiles() {
-    return new ArrayList<>(uploadedFiles);
+    return fileRepository.findAll();
+  }
+
+  public List<FileEntity> getFilesByMemberId(Long memberId) {
+    return fileRepository.findByMember_MemberId(memberId);
   }
 
   public Path getFilePath(String filename) {
-    FileEntity fileEntity = uploadedFiles.stream()
-      .filter(file -> file.getFilename().equals(filename))
-      .findFirst()
-      .orElse(null);
-
-    if (fileEntity != null) {
-      return Paths.get(fileEntity.getFilepath());
-    } else {
-      throw new RuntimeException("파일을 찾을 수 없습니다.: " + filename);
-    }
+    FileEntity fileEntity = fileRepository.findByFilename(filename)
+      .orElseThrow(() -> new RuntimeException("파일을 찾을 수 없습니다.: " + filename));
+    return Paths.get(fileEntity.getFilepath());
   }
 
-  public void clearUploadedFiles() {
-    uploadedFiles.clear();
+  public void deleteFile(Long fileId, Long memberId) throws Exception {
+    FileEntity fileEntity = fileRepository.findById(fileId)
+      .orElseThrow(() -> new RuntimeException("파일을 찾을 수 없습니다.: " + fileId));
+
+    if (!fileEntity.getMember().getMemberId().equals(memberId)) {
+      throw new RuntimeException("해당 파일을 삭제할 권한이 없습니다.");
+    }
+
+    Path path = Paths.get(fileEntity.getFilepath());
+    Files.deleteIfExists(path);
+
+    fileRepository.delete(fileEntity);
   }
 }

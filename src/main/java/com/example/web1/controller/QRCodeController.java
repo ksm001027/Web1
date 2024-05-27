@@ -28,6 +28,7 @@ public class QRCodeController {
     try {
       int width = 350;
       int height = 350;
+
       Map<EncodeHintType, Object> hints = new HashMap<>();
       hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
