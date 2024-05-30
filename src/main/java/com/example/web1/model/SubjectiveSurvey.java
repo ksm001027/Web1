@@ -1,6 +1,7 @@
 package com.example.web1.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "subjective_survey")
@@ -15,8 +16,8 @@ public class SubjectiveSurvey {
   @Column(nullable = false)
   private String question;
 
-  @Column(nullable = true)
-  private String answer;
+  @OneToMany(mappedBy = "subjectiveSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Answer> answers;
 
   public SubjectiveSurvey() {
   }
@@ -51,11 +52,11 @@ public class SubjectiveSurvey {
     this.question = question;
   }
 
-  public String getAnswer() {
-    return answer;
+  public List<Answer> getAnswers() {
+    return answers;
   }
 
-  public void setAnswer(String answer) {
-    this.answer = answer;
+  public void setAnswers(List<Answer> answers) {
+    this.answers = answers;
   }
 }
