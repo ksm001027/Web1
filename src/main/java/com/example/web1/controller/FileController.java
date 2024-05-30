@@ -62,8 +62,10 @@ public class FileController {
     List<FileEntity> files = fileService.getFilesByMemberId(memberId);
     model.addAttribute("files", files);
     model.addAttribute("memberId", memberId);
+    model.addAttribute("serverAddress", serverAddress);  // serverAddress 변수를 모델에 추가
     return "download";
   }
+
 
   @GetMapping("/download")
   public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename, HttpSession session) {
