@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>객관식 설문조사 답변</title>
+  <link rel="stylesheet" href="/css/quiz.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+</head>
+<body>
+<h1>객관식 설문조사 답변</h1>
+<div>
+  <p><strong>설문조사 제목:</strong> <span th:text="${survey.title}"></span></p>
+  <p><strong>질문:</strong> <span th:text="${survey.question}"></span></p>
+</div>
+<form action="/survey/submitObjectiveAnswer" method="POST">
+  <input type="hidden" name="surveyId" th:value="${survey.id}">
+  <div class="form-group">
+    <label for="selectedOption">답변을 선택하세요:</label>
+    <select id="selectedOption" name="selectedOption" required>
+      <option th:value="${survey.option1}" th:text="${survey.option1}"></option>
+      <option th:value="${survey.option2}" th:text="${survey.option2}"></option>
+      <option th:value="${survey.option3}" th:text="${survey.option3}"></option>
+      <option th:value="${survey.option4}" th:text="${survey.option4}"></option>
+    </select>
+  </div>
+  <button type="submit">제출</button>
+</form>
+<p th:if="${result}" th:text="${result}"></p>
+<div class="menu-button-container">
+  <a th:href="@{surveychoice}" class="menu-button"><설문조사유형></설문조사유형> 선택 페이지로 이동</a>
+</div>
+</body>
+</html>
