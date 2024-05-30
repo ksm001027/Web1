@@ -1,7 +1,9 @@
 package com.example.web1.service;
 
+import com.example.web1.model.Answer;
 import com.example.web1.model.ObjectiveSurvey;
 import com.example.web1.model.SubjectiveSurvey;
+import com.example.web1.repository.AnswerRepository;
 import com.example.web1.repository.ObjectiveSurveyRepository;
 import com.example.web1.repository.SubjectiveSurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class SurveyService {
 
   @Autowired
   private ObjectiveSurveyRepository objectiveSurveyRepository;
+
+  @Autowired
+  private AnswerRepository answerRepository;
 
   public boolean saveSubjectiveSurvey(SubjectiveSurvey survey) {
     try {
@@ -42,5 +47,9 @@ public class SurveyService {
 
   public Optional<ObjectiveSurvey> getObjectiveSurveyById(Long id) {
     return objectiveSurveyRepository.findById(id);
+  }
+
+  public void saveAnswer(Answer answer) {
+    answerRepository.save(answer);
   }
 }

@@ -10,12 +10,17 @@
 <body>
 <h1>주관식 설문조사 결과</h1>
 <div>
-  <p><strong>설문조사 제목:</strong> <span th:text="${survey.title}"></span></p>
+  <p><strong>설문 제목:</strong> <span th:text="${survey.title}"></span></p>
   <p><strong>질문:</strong> <span th:text="${survey.question}"></span></p>
-  <p><strong>답변:</strong> <span th:text="${survey.answer}"></span></p>
+</div>
+<div>
+  <h2>답변들:</h2>
+  <ul>
+    <li th:each="answer : ${answers}" th:text="${answer.answer}"></li>
+  </ul>
 </div>
 <div class="menu-button-container">
-  <a th:href="@{surveychoice}" class="menu-button"><설문조사유형></설문조사유형> 선택 페이지로 이동</a>
+  <a th:href="@{quizchoice}" class="menu-button">퀴즈유형 선택 페이지로 이동</a>
 </div>
 </body>
 </html>

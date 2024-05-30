@@ -1,6 +1,7 @@
 package com.example.web1.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "objective_survey")
@@ -27,8 +28,8 @@ public class ObjectiveSurvey {
   @Column(nullable = false)
   private String option4;
 
-  @Column(nullable = true)
-  private String selectedOption;
+  @OneToMany(mappedBy = "objectiveSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Answer> answers;
 
   public ObjectiveSurvey() {
   }
@@ -40,7 +41,6 @@ public class ObjectiveSurvey {
     this.option2 = option2;
     this.option3 = option3;
     this.option4 = option4;
-    this.selectedOption = ""; // 초기값을 빈 문자열로 설정
   }
 
   // Getters and setters
@@ -100,11 +100,11 @@ public class ObjectiveSurvey {
     this.option4 = option4;
   }
 
-  public String getSelectedOption() {
-    return selectedOption;
+  public List<Answer> getAnswers() {
+    return answers;
   }
 
-  public void setSelectedOption(String selectedOption) {
-    this.selectedOption = selectedOption;
+  public void setAnswers(List<Answer> answers) {
+    this.answers = answers;
   }
 }
