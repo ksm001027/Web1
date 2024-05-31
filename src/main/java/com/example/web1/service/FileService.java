@@ -56,6 +56,12 @@ public class FileService {
     return Paths.get(fileEntity.getFilepath());
   }
 
+  public Path getFilePathForMember(String filename, Long memberId) {
+    FileEntity fileEntity = fileRepository.findByFilenameAndMember_MemberId(filename, memberId)
+      .orElseThrow(() -> new RuntimeException("파일을 찾을 수 없습니다.: " + filename));
+    return Paths.get(fileEntity.getFilepath());
+  }
+
   public void deleteFile(Long fileId, Long memberId) throws Exception {
     FileEntity fileEntity = fileRepository.findById(fileId)
       .orElseThrow(() -> new RuntimeException("파일을 찾을 수 없습니다.: " + fileId));

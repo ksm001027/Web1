@@ -4,11 +4,13 @@ import com.example.web1.model.ObjectiveQuiz;
 import com.example.web1.model.SubjectiveQuiz;
 import com.example.web1.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.Optional;
-import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/quiz")
@@ -16,6 +18,9 @@ public class QuizController {
 
   @Autowired
   private QuizService quizService;
+
+  @Value("${app.server.address}")
+  private String serverAddress;
 
   @PostMapping("/submitObjective")
   public String submitObjectiveQuiz(
@@ -64,6 +69,7 @@ public class QuizController {
     Optional<SubjectiveQuiz> quiz = quizService.getSubjectiveQuizById(id);
     if (quiz.isPresent()) {
       model.addAttribute("quiz", quiz.get());
+      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
       return "subjectiveQuiz"; // subjectiveQuiz.html로 매핑
     } else {
       return "quizNotFound";
@@ -90,6 +96,7 @@ public class QuizController {
     Optional<ObjectiveQuiz> quiz = quizService.getObjectiveQuizById(id);
     if (quiz.isPresent()) {
       model.addAttribute("quiz", quiz.get());
+      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
       return "objectiveQuiz"; // objectiveQuiz.html로 매핑
     } else {
       return "quizNotFound";

@@ -5,10 +5,11 @@ import com.example.web1.model.ObjectiveSurvey;
 import com.example.web1.model.SubjectiveSurvey;
 import com.example.web1.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,16 @@ public class SurveyController {
 
   @Autowired
   private SurveyService surveyService;
+
+  @Value("${app.server.address}")
+  private String serverAddress;
+
+  @GetMapping("/survey")
+  public String getSurvey(Model model) {
+    // survey 데이터를 모델에 추가하는 코드
+    model.addAttribute("serverAddress", serverAddress);
+    return "objectiveSurveyAnswer";
+  }
 
   @PostMapping("/submitObjective")
   public String submitObjectiveSurvey(
@@ -78,6 +89,7 @@ public class SurveyController {
     Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
     if (survey.isPresent()) {
       model.addAttribute("survey", survey.get());
+      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
       return "objectiveSurveyAnswer"; // objectiveSurveyAnswer.html로 매핑
     } else {
       return "surveyNotFound";
@@ -89,6 +101,7 @@ public class SurveyController {
     Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
     if (survey.isPresent()) {
       model.addAttribute("survey", survey.get());
+      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
       return "subjectiveSurveyAnswer"; // subjectiveSurveyAnswer.html로 매핑
     } else {
       return "surveyNotFound";

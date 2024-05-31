@@ -26,5 +26,11 @@
   <a th:href="@{/surveychoice}" class="menu-button">설문조사 선택 페이지로 이동</a>
   <a th:href="@{/survey/subjectiveSurveyResult/{id}(id=${survey.id})}" class="menu-button">결과 보기</a>
 </div>
+<div>
+  <h2>설문조사 QR 코드</h2>
+  <img th:src="@{'/generate-qr?url=' + ${serverAddress} + '/survey/subjectiveSurveyAnswer/' + ${survey.id}}" alt="QR Code">
+</div>
+<!-- QR 코드 아래에 URL을 표시 -->
+<p th:text="${serverAddress} + '/survey/subjectiveSurveyAnswer/' + ${survey.id}" style="margin-top: 10px;"></p>
 </body>
 </html>

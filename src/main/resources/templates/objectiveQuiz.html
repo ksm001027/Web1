@@ -26,6 +26,13 @@
   </div>
   <button type="submit">제출</button>
 </form>
+
 <p th:if="${result}" th:text="${result}"></p>
+<div>
+  <h2>객관식 퀴즈 QR 코드</h2>
+  <img th:src="@{'/generate-qr?url=' + ${serverAddress} + '/quiz/objectiveQuiz/' + ${quiz.id}}" alt="QR Code">
+</div>
+<!-- QR 코드 아래에 URL을 표시 -->
+<p th:text="${serverAddress} + '/quiz/objectiveQuiz/' + ${quiz.id}" style="margin-top: 10px;"></p>
 </body>
 </html>
