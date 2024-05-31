@@ -16,10 +16,10 @@
 <div>
   <h2>답변 통계</h2>
   <ul>
-    <li><strong th:text="'보기 1: ' + ${survey.option1} + ' - ' + ${answerCounts[survey.option1]} + '명'"></strong></li>
-    <li><strong th:text="'보기 2: ' + ${survey.option2} + ' - ' + ${answerCounts[survey.option2]} + '명'"></strong></li>
-    <li><strong th:text="'보기 3: ' + ${survey.option3} + ' - ' + ${answerCounts[survey.option3]} + '명'"></strong></li>
-    <li><strong th:text="'보기 4: ' + ${survey.option4} + ' - ' + ${answerCounts[survey.option4]} + '명'"></strong></li>
+    <li><strong th:text="'보기 1: ' + ${survey.option1} + ' - ' + ${answerCounts['1']} + '명'"></strong></li>
+    <li><strong th:text="'보기 2: ' + ${survey.option2} + ' - ' + ${answerCounts['2']} + '명'"></strong></li>
+    <li><strong th:text="'보기 3: ' + ${survey.option3} + ' - ' + ${answerCounts['3']} + '명'"></strong></li>
+    <li><strong th:text="'보기 4: ' + ${survey.option4} + ' - ' + ${answerCounts['4']} + '명'"></strong></li>
   </ul>
 </div>
 <div class="menu-button-container">

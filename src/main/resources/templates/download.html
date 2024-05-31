@@ -15,7 +15,8 @@
     </li>
   </ul>
   <div>
-    <img src="/generate-qr" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
+    <img th:src="@{'/generate-qr?url=' + ${serverAddress} + '/downloads'}" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
+    <p th:text="${serverAddress} + '/downloads'" style="margin-top: 10px;"></p> <!-- QR 코드 아래에 URL을 표시 -->
   </div>
 </div>
 </body>

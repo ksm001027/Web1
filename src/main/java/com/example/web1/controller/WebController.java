@@ -18,8 +18,9 @@ public class WebController {
 
   @GetMapping("/chat/{randomString}")
   public String showChatPage(@PathVariable String randomString) {
-    return "chat"; // chat.html로 매핑
+    return "redirect:/HTML/chat.html?" + randomString; // chat.html로 리다이렉트
   }
+
 
   @GetMapping("/web-menu")
   public String webMenu() {
@@ -31,9 +32,9 @@ public class WebController {
     return "quizchoice";  // 'quizchoice.html'을 렌더링
   }
 
-  @GetMapping("/quiz1")
+  @GetMapping("/subjective")
   public String showQuiz1() {
-    return "quiz1";  // 'quiz1.html'을 렌더링
+    return "subjective";  //
   }
 
   @GetMapping("/quiz1Take")
@@ -41,9 +42,9 @@ public class WebController {
     return "quiz1Take";  // 'quiz1Take.html'을 렌더링
   }
 
-  @GetMapping("/quiz2")
+  @GetMapping("/objective")
   public String showQuiz2() {
-    return "quiz2";  // 'quiz2.html'을 렌더링
+    return "objective";
   }
 
   @GetMapping("/quiz")

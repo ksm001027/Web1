@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+<<<<<<< HEAD
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,8 +22,15 @@ import java.util.Map;
 import java.util.Optional;
 import javax.imageio.ImageIO;
 
+=======
+>>>>>>> f61c29e968747e2f505cdf1648b0564e45c3dacf
 import org.springframework.ui.Model;
 import org.springframework.util.Base64Utils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/survey")
@@ -46,7 +54,11 @@ public class SurveyController {
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사가 성공적으로 등록되었습니다!");
+<<<<<<< HEAD
       return "redirect:/survey/showQRCode/" + survey.getId(); // QR 코드 페이지로 이동
+=======
+      return "redirect:/survey/objectiveSurveyAnswer/" + survey.getId(); // 설문조사 ID로 이동
+>>>>>>> f61c29e968747e2f505cdf1648b0564e45c3dacf
     } else {
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
@@ -64,7 +76,11 @@ public class SurveyController {
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사가 성공적으로 등록되었습니다!");
+<<<<<<< HEAD
       return "redirect:/survey/showQRCode/" + survey.getId(); // QR 코드 페이지로 이동
+=======
+      return "redirect:/survey/subjectiveSurveyAnswer/" + survey.getId(); // 설문조사 ID로 이동
+>>>>>>> f61c29e968747e2f505cdf1648b0564e45c3dacf
     } else {
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
@@ -94,22 +110,23 @@ public class SurveyController {
     }
   }
 
+<<<<<<< HEAD
   // 기존 코드들...
-
-  @GetMapping("/objectiveSurvey/{id}")
-  public String getObjectiveSurvey(@PathVariable Long id, Model model) {
+=======
+  @GetMapping("/objectiveSurveyAnswer/{id}")
+  public String getObjectiveSurveyAnswer(@PathVariable Long id, Model model) {
     Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
     if (survey.isPresent()) {
       model.addAttribute("survey", survey.get());
-      return "objectiveSurvey"; // objectiveSurvey.html로 매핑
+      return "objectiveSurveyAnswer"; // objectiveSurveyAnswer.html로 매핑
     } else {
       return "surveyNotFound";
     }
   }
 
-  @PostMapping("/submitObjectiveAnswer")
-  public String submitObjectiveAnswer(@RequestParam Long surveyId, @RequestParam String answer, RedirectAttributes redirectAttributes) {
-    Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(surveyId);
+  @PostMapping("/submitSubjectiveAnswer")
+  public String submitSubjectiveAnswer(@RequestParam Long surveyId, @RequestParam String answer, RedirectAttributes redirectAttributes) {
+    Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(surveyId);
     if (survey.isPresent()) {
       Answer newAnswer = new Answer(survey.get(), answer);
       surveyService.saveAnswer(newAnswer);
@@ -119,6 +136,39 @@ public class SurveyController {
       return "surveyNotFound";
     }
   }
+>>>>>>> f61c29e968747e2f505cdf1648b0564e45c3dacf
+
+  @PostMapping("/submitObjectiveAnswer")
+  public String submitObjectiveAnswer(@RequestParam Long surveyId, @RequestParam String answer, RedirectAttributes redirectAttributes) {
+    Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(surveyId);
+    if (survey.isPresent()) {
+      Answer newAnswer = new Answer(survey.get(), answer);
+      surveyService.saveAnswer(newAnswer);
+      return "redirect:/survey/objectiveSurveyResult/" + surveyId; // 결과 페이지로 리다이렉트
+    } else {
+      return "surveyNotFound";
+    }
+  }
+
+
+  @GetMapping("/objectiveSurveyResult/{id}")
+  public String getObjectiveSurveyResult(@PathVariable Long id, Model model) {
+    Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
+    if (survey.isPresent()) {
+      List<Answer> answers = surveyService.getAnswersByObjectiveSurveyId(id);
+      Map<String, Long> answerCounts = answers.stream()
+        .collect(Collectors.groupingBy(Answer::getAnswer, Collectors.counting()));
+      model.addAttribute("survey", survey.get());
+      model.addAttribute("answerCounts", answerCounts);
+      return "objectiveSurveyResult"; // objectiveSurveyResult.html로 매핑
+    } else {
+      return "surveyNotFound";
+    }
+  }
+
+
+
+
 
   @GetMapping("/result")
   public String showResultPage() {

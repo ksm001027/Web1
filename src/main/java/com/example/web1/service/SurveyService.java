@@ -9,7 +9,10 @@ import com.example.web1.repository.SubjectiveSurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SurveyService {
@@ -51,5 +54,18 @@ public class SurveyService {
 
   public void saveAnswer(Answer answer) {
     answerRepository.save(answer);
+  }
+
+  public List<Answer> getAnswersBySubjectiveSurveyId(Long surveyId) {
+    return answerRepository.findBySubjectiveSurveyId(surveyId);
+  }
+
+  public List<Answer> getAnswersByObjectiveSurveyId(Long surveyId) {
+    return answerRepository.findByObjectiveSurveyId(surveyId);
+  }
+
+  public Map<String, Long> countAnswersForObjectiveSurvey(Long surveyId) {
+    List<Answer> answers = answerRepository.findByObjectiveSurveyId(surveyId);
+    return answers.stream().collect(Collectors.groupingBy(Answer::getAnswer, Collectors.counting()));
   }
 }
