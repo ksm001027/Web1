@@ -16,19 +16,20 @@
 <form action="/survey/submitObjectiveAnswer" method="POST">
   <input type="hidden" name="surveyId" th:value="${survey.id}">
   <div class="form-group">
-    <label for="selectedOption">답변을 선택하세요:</label>
-    <select id="selectedOption" name="selectedOption" required>
-      <option th:value="${survey.option1}" th:text="${survey.option1}"></option>
-      <option th:value="${survey.option2}" th:text="${survey.option2}"></option>
-      <option th:value="${survey.option3}" th:text="${survey.option3}"></option>
-      <option th:value="${survey.option4}" th:text="${survey.option4}"></option>
+    <label for="answer">정답을 선택하세요:</label>
+    <select id="answer" name="answer" required>
+      <option value="1" th:text="${survey.option1}"></option>
+      <option value="2" th:text="${survey.option2}"></option>
+      <option value="3" th:text="${survey.option3}"></option>
+      <option value="4" th:text="${survey.option4}"></option>
     </select>
   </div>
   <button type="submit">제출</button>
 </form>
 <p th:if="${result}" th:text="${result}"></p>
 <div class="menu-button-container">
-  <a th:href="@{surveychoice}" class="menu-button"><설문조사유형></설문조사유형> 선택 페이지로 이동</a>
+  <a th:href="@{surveychoice}" class="menu-button">설문조사 선택 페이지로 이동</a>
+  <a th:href="@{/survey/objectiveSurveyResult/{id}(id=${survey.id})}" class="menu-button">결과 보기</a>
 </div>
 </body>
 </html>
