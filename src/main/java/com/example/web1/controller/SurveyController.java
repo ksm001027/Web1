@@ -121,8 +121,6 @@ public class SurveyController {
     }
   }
 
-<<<<<<< HEAD
-=======
   @GetMapping("/subjectiveSurveyResult/{id}")
   public String getSubjectiveSurveyResult(@PathVariable Long id, Model model) {
     Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
@@ -136,7 +134,6 @@ public class SurveyController {
     }
   }
 
->>>>>>> 0d930cc1a657892d0c7aa70efda6b87451d2ec93
   @GetMapping("/objectiveSurveyResult/{id}")
   public String getObjectiveSurveyResult(@PathVariable Long id, Model model) {
     Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
