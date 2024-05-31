@@ -28,7 +28,7 @@
 </form>
 <p th:if="${result}" th:text="${result}"></p>
 <div class="menu-button-container">
-  <a th:href="@{surveychoice}" class="menu-button">설문조사 선택 페이지로 이동</a>
+  <a th:href="@{/surveychoice}" class="menu-button">설문조사 선택 페이지로 이동</a>
   <a th:href="@{/survey/objectiveSurveyResult/{id}(id=${survey.id})}" class="menu-button">결과 보기</a>
 </div>
 </body>

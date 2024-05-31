@@ -68,4 +68,11 @@ public class SurveyService {
     List<Answer> answers = answerRepository.findByObjectiveSurveyId(surveyId);
     return answers.stream().collect(Collectors.groupingBy(Answer::getAnswer, Collectors.counting()));
   }
+
+  public List<Answer> getAnswersBySurveyId(Long surveyId) {
+    List<Answer> subjectiveAnswers = answerRepository.findBySubjectiveSurveyId(surveyId);
+    List<Answer> objectiveAnswers = answerRepository.findByObjectiveSurveyId(surveyId);
+    subjectiveAnswers.addAll(objectiveAnswers);
+    return subjectiveAnswers;
+  }
 }
