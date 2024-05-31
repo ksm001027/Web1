@@ -4,13 +4,25 @@ import com.example.web1.model.Answer;
 import com.example.web1.model.ObjectiveSurvey;
 import com.example.web1.model.SubjectiveSurvey;
 import com.example.web1.service.SurveyService;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import javax.imageio.ImageIO;
+
 import org.springframework.ui.Model;
+import org.springframework.util.Base64Utils;
 
 @Controller
 @RequestMapping("/survey")
@@ -34,7 +46,7 @@ public class SurveyController {
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사가 성공적으로 등록되었습니다!");
-      return "redirect:/survey/objectiveSurvey/" + survey.getId(); // 설문조사 ID로 이동
+      return "redirect:/survey/showQRCode/" + survey.getId(); // QR 코드 페이지로 이동
     } else {
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
@@ -52,36 +64,37 @@ public class SurveyController {
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사가 성공적으로 등록되었습니다!");
-      return "redirect:/survey/subjectiveSurvey/" + survey.getId(); // 설문조사 ID로 이동
+      return "redirect:/survey/showQRCode/" + survey.getId(); // QR 코드 페이지로 이동
     } else {
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
     }
   }
 
-  @GetMapping("/subjectiveSurvey/{id}")
-  public String getSubjectiveSurvey(@PathVariable Long id, Model model) {
-    Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
-    if (survey.isPresent()) {
-      model.addAttribute("survey", survey.get());
-      return "subjectiveSurvey"; // subjectiveSurvey.html로 매핑
-    } else {
-      return "surveyNotFound";
+  @GetMapping("/showQRCode/{id}")
+  public String showQRCode(@PathVariable Long id, Model model) {
+    String url = "http://your-domain/survey/answer/" + id;
+    String qrCodeImage = generateQRCodeImage(url);
+    model.addAttribute("qrCodeImage", qrCodeImage);
+    model.addAttribute("url", url);
+    return "showQRCode"; // showQRCode.html로 매핑
+  }
+
+  private String generateQRCodeImage(String url) {
+    QRCodeWriter qrCodeWriter = new QRCodeWriter();
+    try {
+      ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+      com.google.zxing.common.BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, 200, 200);
+      MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+      byte[] pngData = pngOutputStream.toByteArray();
+      return "data:image/png;base64," + Base64Utils.encodeToString(pngData);
+    } catch (WriterException | IOException e) {
+      e.printStackTrace();
+      return null;
     }
   }
 
-  @PostMapping("/submitSubjectiveAnswer")
-  public String submitSubjectiveAnswer(@RequestParam Long surveyId, @RequestParam String answer, RedirectAttributes redirectAttributes) {
-    Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(surveyId);
-    if (survey.isPresent()) {
-      Answer newAnswer = new Answer(survey.get(), answer);
-      surveyService.saveAnswer(newAnswer);
-      redirectAttributes.addFlashAttribute("result", "답변이 성공적으로 저장되었습니다!");
-      return "redirect:/survey/result";
-    } else {
-      return "surveyNotFound";
-    }
-  }
+  // 기존 코드들...
 
   @GetMapping("/objectiveSurvey/{id}")
   public String getObjectiveSurvey(@PathVariable Long id, Model model) {
