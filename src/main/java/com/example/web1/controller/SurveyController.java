@@ -4,6 +4,8 @@ import com.example.web1.model.Answer;
 import com.example.web1.model.ObjectiveSurvey;
 import com.example.web1.model.SubjectiveSurvey;
 import com.example.web1.service.SurveyService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -151,10 +154,26 @@ public class SurveyController {
   public String getObjectiveSurveyResult(@PathVariable Long id, Model model) {
     Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
     if (survey.isPresent()) {
+      ObjectiveSurvey surveyData = survey.get();
       List<Answer> answers = surveyService.getAnswersByObjectiveSurveyId(id);
       Map<String, Long> answerCounts = answers.stream()
         .collect(Collectors.groupingBy(Answer::getAnswer, Collectors.counting()));
-      model.addAttribute("survey", survey.get());
+
+      // JSON 데이터를 문자열로 변환
+      Map<String, Object> surveyDataJson = new HashMap<>();
+      surveyDataJson.put("title", surveyData.getTitle());
+      surveyDataJson.put("question", surveyData.getQuestion());
+      surveyDataJson.put("options", List.of(surveyData.getOption1(), surveyData.getOption2(), surveyData.getOption3(), surveyData.getOption4()));
+      surveyDataJson.put("answerCounts", answerCounts);
+
+      try {
+        model.addAttribute("surveyDataJson", new ObjectMapper().writeValueAsString(surveyDataJson));
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
+        throw new RuntimeException("Failed to convert survey data to JSON", e);
+      }
+
+      model.addAttribute("survey", surveyData);
       model.addAttribute("answerCounts", answerCounts);
       return "objectiveSurveyResult"; // objectiveSurveyResult.html로 매핑
     } else {

@@ -61,7 +61,9 @@ public class SurveyService {
   }
 
   public List<Answer> getAnswersByObjectiveSurveyId(Long surveyId) {
-    return answerRepository.findByObjectiveSurveyId(surveyId);
+    List<Answer> answers = answerRepository.findByObjectiveSurveyId(surveyId);
+    System.out.println("Answers: " + answers);
+    return answers;
   }
 
   public Map<String, Long> countAnswersForObjectiveSurvey(Long surveyId) {

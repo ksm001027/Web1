@@ -5,25 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>객관식 설문조사 결과</title>
   <link rel="stylesheet" href="/css/quiz.css">
-  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <link rel="stylesheet" type="text/css" href="/css/common.css"/>
+  <link rel="stylesheet" type="text/css" href="/css/surveyResult.css"/>
 </head>
 <body>
 <h1>객관식 설문조사 결과</h1>
 <div>
-  <p><strong>설문조사 제목:</strong> <span th:text="${survey.title}"></span></p>
-  <p><strong>질문:</strong> <span th:text="${survey.question}"></span></p>
+  <p><strong>설문조사 제목:</strong> <span id="surveyTitle" th:text="${survey.title}"></span></p>
+  <p><strong>질문:</strong> <span id="surveyQuestion" th:text="${survey.question}"></span></p>
 </div>
 <div>
   <h2>답변 통계</h2>
-  <ul>
-    <li><strong th:text="'보기 1: ' + ${survey.option1} + ' - ' + ${answerCounts['1']} + '명'"></strong></li>
-    <li><strong th:text="'보기 2: ' + ${survey.option2} + ' - ' + ${answerCounts['2']} + '명'"></strong></li>
-    <li><strong th:text="'보기 3: ' + ${survey.option3} + ' - ' + ${answerCounts['3']} + '명'"></strong></li>
-    <li><strong th:text="'보기 4: ' + ${survey.option4} + ' - ' + ${answerCounts['4']} + '명'"></strong></li>
-  </ul>
+  <canvas id="surveyChart" width="400" height="400"></canvas>
 </div>
+<div id="surveyDataJson" style="display:none;" th:text="${surveyDataJson}"></div>
 <div class="menu-button-container">
-  <a th:href="@{/surveychoice}" class="menu-button"><설문조사유형></설문조사유형> 선택 페이지로 이동</a>
+  <a href="/surveychoice" class="menu-button">설문조사 선택 페이지로 이동</a>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/objectiveSurveyResult.js"></script>
 </body>
 </html>
