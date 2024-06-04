@@ -11,71 +11,18 @@
 <body>
 <h1>객관식 설문조사 결과</h1>
 <div>
-  <p><strong>설문조사 제목:</strong> <span id="surveyTitle"></span></p>
-  <p><strong>질문:</strong> <span id="surveyQuestion"></span></p>
+  <p><strong>설문조사 제목:</strong> <span id="surveyTitle" th:text="${survey.title}"></span></p>
+  <p><strong>질문:</strong> <span id="surveyQuestion" th:text="${survey.question}"></span></p>
 </div>
 <div>
   <h2>답변 통계</h2>
   <canvas id="surveyChart" width="400" height="400"></canvas>
 </div>
+<div id="surveyDataJson" style="display:none;" th:text="${surveyDataJson}"></div>
 <div class="menu-button-container">
   <a href="/surveychoice" class="menu-button">설문조사 선택 페이지로 이동</a>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const surveyData = {
-      title: "설문조사 제목 예시", // 예시 데이터
-      question: "질문 예시",
-      options: ["옵션1", "옵션2", "옵션3", "옵션4"],
-      answerCounts: {
-        option1: 10,
-        option2: 20,
-        option3: 5,
-        option4: 15
-      }
-    };
-
-    document.getElementById('surveyTitle').innerText = surveyData.title;
-    document.getElementById('surveyQuestion').innerText = surveyData.question;
-
-    const ctx = document.getElementById('surveyChart').getContext('2d');
-    const surveyChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: surveyData.options,
-        datasets: [{
-          label: '응답 수',
-          data: [
-            surveyData.answerCounts.option1,
-            surveyData.answerCounts.option2,
-            surveyData.answerCounts.option3,
-            surveyData.answerCounts.option4
-          ],
-          backgroundColor: [
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(153, 102, 255, 0.2)'
-          ],
-          borderColor: [
-            'rgba(75, 192, 192, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(153, 102, 255, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  });
-</script>
+<script src="/js/objectiveSurveyResult.js"></script>
 </body>
 </html>
