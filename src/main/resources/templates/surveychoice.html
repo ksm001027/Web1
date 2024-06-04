@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/surveyChoice.css">
   <title>설문조사 선택</title>
   <link rel="stylesheet" href="/css/survey.css">
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
@@ -10,8 +11,11 @@
 <body>
 <h1>설문조사 선택</h1>
 <div class="menu-container">
-  <a th:href="@{/subjectiveSurvey}" class="menu-button">주관식 설문조사</a>
-  <a th:href="@{/objectiveSurvey}" class="menu-button">객관식 설문조사</a>
+  <a th:href="@{/subjectiveSurvey}" class="subjective-button">주관식 설문조사</a>
+  <a th:href="@{/objectiveSurvey}" class="objective-button">객관식 설문조사</a>
+</div>
+<div class="menu-button-container">
+  <a th:href="@{menu}" class="menu-button">메뉴로 이동</a>
 </div>
 </body>
 </html>
