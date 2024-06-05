@@ -3,15 +3,20 @@ package com.example.web1.service;
 import com.example.web1.model.Answer;
 import com.example.web1.model.ObjectiveSurvey;
 import com.example.web1.model.SubjectiveSurvey;
+import com.example.web1.model.MemberEntity;
 import com.example.web1.repository.AnswerRepository;
 import com.example.web1.repository.ObjectiveSurveyRepository;
 import com.example.web1.repository.SubjectiveSurveyRepository;
+import com.example.web1.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,19 +31,36 @@ public class SurveyService {
   @Autowired
   private AnswerRepository answerRepository;
 
-  public boolean saveSubjectiveSurvey(SubjectiveSurvey survey) {
+  @Autowired
+  private MemberRepository memberRepository;
+
+  private Map<String, Long> tempSessionStore = new ConcurrentHashMap<>();
+
+  public boolean saveSubjectiveSurvey(SubjectiveSurvey survey, Long memberId) {
     try {
-      subjectiveSurveyRepository.save(survey);
-      return true;
+      Optional<MemberEntity> memberOpt = memberRepository.findById(memberId);
+      if (memberOpt.isPresent()) {
+        survey.setMember(memberOpt.get());
+        subjectiveSurveyRepository.save(survey);
+        return true;
+      } else {
+        return false; // Member not found
+      }
     } catch (Exception e) {
       return false;
     }
   }
 
-  public boolean saveObjectiveSurvey(ObjectiveSurvey survey) {
+  public boolean saveObjectiveSurvey(ObjectiveSurvey survey, Long memberId) {
     try {
-      objectiveSurveyRepository.save(survey);
-      return true;
+      Optional<MemberEntity> memberOpt = memberRepository.findById(memberId);
+      if (memberOpt.isPresent()) {
+        survey.setMember(memberOpt.get());
+        objectiveSurveyRepository.save(survey);
+        return true;
+      } else {
+        return false; // Member not found
+      }
     } catch (Exception e) {
       return false;
     }
@@ -76,5 +98,15 @@ public class SurveyService {
     List<Answer> objectiveAnswers = answerRepository.findByObjectiveSurveyId(surveyId);
     subjectiveAnswers.addAll(objectiveAnswers);
     return subjectiveAnswers;
+  }
+
+  public String createTemporarySession(Long memberId) {
+    String tempSessionId = UUID.randomUUID().toString();
+    tempSessionStore.put(tempSessionId, memberId);
+    return tempSessionId;
+  }
+
+  public Long validateTemporarySessionAndGetMemberId(String tempSessionId) {
+    return tempSessionStore.get(tempSessionId);
   }
 }

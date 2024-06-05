@@ -4,6 +4,8 @@ import com.example.web1.model.Answer;
 import com.example.web1.model.ObjectiveSurvey;
 import com.example.web1.model.SubjectiveSurvey;
 import com.example.web1.service.SurveyService;
+import com.example.web1.model.MemberEntity;
+import com.example.web1.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -26,12 +30,14 @@ public class SurveyController {
   @Autowired
   private SurveyService surveyService;
 
+  @Autowired
+  private MemberRepository memberRepository;
+
   @Value("${app.server.address}")
   private String serverAddress;
 
   @GetMapping("/survey")
   public String getSurvey(Model model) {
-    // survey 데이터를 모델에 추가하는 코드
     model.addAttribute("serverAddress", serverAddress);
     return "objectiveSurveyAnswer";
   }
@@ -44,14 +50,29 @@ public class SurveyController {
     @RequestParam String option2,
     @RequestParam String option3,
     @RequestParam String option4,
+    HttpSession session,
     RedirectAttributes redirectAttributes) {
 
-    ObjectiveSurvey survey = new ObjectiveSurvey(surveyTitle, question, option1, option2, option3, option4);
-    boolean isSaved = surveyService.saveObjectiveSurvey(survey);
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    Optional<MemberEntity> memberOpt = memberRepository.findById(memberId);
+    if (!memberOpt.isPresent()) {
+      redirectAttributes.addFlashAttribute("message", "유효하지 않은 사용자입니다.");
+      return "redirect:/member/login";
+    }
+
+    MemberEntity member = memberOpt.get();
+    ObjectiveSurvey survey = new ObjectiveSurvey(surveyTitle, question, option1, option2, option3, option4, member);
+    boolean isSaved = surveyService.saveObjectiveSurvey(survey, memberId);
 
     if (isSaved) {
+      String tempSessionId = surveyService.createTemporarySession(memberId);
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사가 성공적으로 등록되었습니다!");
-      return "redirect:/survey/objectiveSurveyAnswer/" + survey.getId(); // 설문조사 ID로 이동
+      return "redirect:/survey/objectiveSurveyAnswer/" + survey.getId() + "?tempSessionId=" + tempSessionId;
     } else {
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
@@ -62,14 +83,29 @@ public class SurveyController {
   public String submitSubjectiveSurvey(
     @RequestParam String surveyTitle,
     @RequestParam String question,
+    HttpSession session,
     RedirectAttributes redirectAttributes) {
 
-    SubjectiveSurvey survey = new SubjectiveSurvey(surveyTitle, question);
-    boolean isSaved = surveyService.saveSubjectiveSurvey(survey);
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    Optional<MemberEntity> memberOpt = memberRepository.findById(memberId);
+    if (!memberOpt.isPresent()) {
+      redirectAttributes.addFlashAttribute("message", "유효하지 않은 사용자입니다.");
+      return "redirect:/member/login";
+    }
+
+    MemberEntity member = memberOpt.get();
+    SubjectiveSurvey survey = new SubjectiveSurvey(surveyTitle, question, member);
+    boolean isSaved = surveyService.saveSubjectiveSurvey(survey, memberId);
 
     if (isSaved) {
+      String tempSessionId = surveyService.createTemporarySession(memberId);
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사가 성공적으로 등록되었습니다!");
-      return "redirect:/survey/subjectiveSurveyAnswer/" + survey.getId(); // 설문조사 ID로 이동
+      return "redirect:/survey/subjectiveSurveyAnswer/" + survey.getId() + "?tempSessionId=" + tempSessionId;
     } else {
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
@@ -77,35 +113,89 @@ public class SurveyController {
   }
 
   @GetMapping("/subjectiveSurvey/{id}")
-  public String getSubjectiveSurvey(@PathVariable Long id, Model model) {
+  public String getSubjectiveSurvey(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+
+    if (memberId == null && tempSessionId != null) {
+      memberId = surveyService.validateTemporarySessionAndGetMemberId(tempSessionId);
+      if (memberId != null) {
+        session.setAttribute("memberId", memberId);
+      }
+    }
+
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
     Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
     if (survey.isPresent()) {
       model.addAttribute("survey", survey.get());
-      return "subjectiveSurvey"; // subjectiveSurvey.html로 매핑
+      return "subjectiveSurvey";
     } else {
       return "surveyNotFound";
     }
   }
 
   @GetMapping("/objectiveSurveyAnswer/{id}")
-  public String getObjectiveSurveyAnswer(@PathVariable Long id, Model model) {
+  public String getObjectiveSurveyAnswer(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+
+    if (memberId == null && tempSessionId != null) {
+      memberId = surveyService.validateTemporarySessionAndGetMemberId(tempSessionId);
+      if (memberId != null) {
+        session.setAttribute("memberId", memberId);
+      }
+    }
+
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
     Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
     if (survey.isPresent()) {
-      model.addAttribute("survey", survey.get());
-      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
-      return "objectiveSurveyAnswer"; // objectiveSurveyAnswer.html로 매핑
+      ObjectiveSurvey surveyData = survey.get();
+      if (tempSessionId == null) {
+        tempSessionId = surveyService.createTemporarySession(memberId);
+      }
+      String qrCodeUrl = serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      model.addAttribute("survey", surveyData);
+      model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("qrCodeUrl", qrCodeUrl);
+      return "objectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
     }
   }
 
   @GetMapping("/subjectiveSurveyAnswer/{id}")
-  public String getSubjectiveSurveyAnswer(@PathVariable Long id, Model model) {
+  public String getSubjectiveSurveyAnswer(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+
+    if (memberId == null && tempSessionId != null) {
+      memberId = surveyService.validateTemporarySessionAndGetMemberId(tempSessionId);
+      if (memberId != null) {
+        session.setAttribute("memberId", memberId);
+      }
+    }
+
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
     Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
     if (survey.isPresent()) {
-      model.addAttribute("survey", survey.get());
-      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
-      return "subjectiveSurveyAnswer"; // subjectiveSurveyAnswer.html로 매핑
+      SubjectiveSurvey surveyData = survey.get();
+      if (tempSessionId == null) {
+        tempSessionId = surveyService.createTemporarySession(memberId);
+      }
+      String qrCodeUrl = serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      model.addAttribute("survey", surveyData);
+      model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("qrCodeUrl", qrCodeUrl);
+      return "subjectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
     }
@@ -118,7 +208,7 @@ public class SurveyController {
       Answer newAnswer = new Answer(survey.get(), answer);
       surveyService.saveAnswer(newAnswer);
       redirectAttributes.addFlashAttribute("result", "답변이 성공적으로 저장되었습니다!");
-      return "redirect:/survey/subjectiveSurveyAnswer/" + surveyId; // 다시 설문조사 답변 페이지로 리다이렉트
+      return "redirect:/survey/subjectiveSurveyAnswer/" + surveyId;
     } else {
       return "surveyNotFound";
     }
@@ -131,7 +221,7 @@ public class SurveyController {
       Answer newAnswer = new Answer(survey.get(), answer);
       surveyService.saveAnswer(newAnswer);
       redirectAttributes.addFlashAttribute("result", "답변이 성공적으로 저장되었습니다!");
-      return "redirect:/survey/objectiveSurveyAnswer/" + surveyId; // 결과 페이지로 리다이렉트
+      return "redirect:/survey/objectiveSurveyAnswer/" + surveyId;
     } else {
       return "surveyNotFound";
     }
@@ -144,7 +234,7 @@ public class SurveyController {
       List<Answer> answers = surveyService.getAnswersBySubjectiveSurveyId(id);
       model.addAttribute("survey", survey.get());
       model.addAttribute("answers", answers);
-      return "subjectiveSurveyResult"; // subjectiveSurveyResult.html로 매핑
+      return "subjectiveSurveyResult";
     } else {
       return "surveyNotFound";
     }
@@ -175,7 +265,7 @@ public class SurveyController {
 
       model.addAttribute("survey", surveyData);
       model.addAttribute("answerCounts", answerCounts);
-      return "objectiveSurveyResult"; // objectiveSurveyResult.html로 매핑
+      return "objectiveSurveyResult";
     } else {
       return "surveyNotFound";
     }
@@ -183,6 +273,6 @@ public class SurveyController {
 
   @GetMapping("/result")
   public String showResultPage() {
-    return "result"; // result.html로 매핑
+    return "result";
   }
 }
