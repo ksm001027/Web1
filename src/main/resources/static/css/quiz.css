@@ -1,21 +1,33 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 40px;
+  margin: 0;
+  padding: 0;
   background-color: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
 }
+
 h1 {
   color: #333;
+  margin-bottom: 20px;
 }
+
 .form-group {
   margin-bottom: 20px;
 }
+
 .option-input {
   margin-bottom: 10px;
 }
+
 label {
   display: block;
   margin-bottom: 5px;
 }
+
 input[type="text"] {
   width: calc(100% - 90px);
   padding: 8px;
@@ -23,6 +35,7 @@ input[type="text"] {
   border-radius: 4px;
   display: inline-block;
 }
+
 button {
   background-color: #5c67f2;
   color: white;
@@ -33,6 +46,66 @@ button {
   font-size: 16px;
   margin-left: 10px;
 }
+
 button:hover {
   background-color: #5058e2;
+}
+
+/* 화면 비율에 따라 스타일 조정 */
+@media (max-width: 1200px) and (min-aspect-ratio: 3/2) {
+  .form-group {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 1200px) and (max-aspect-ratio: 3/2) {
+  .form-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    margin: 20px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+/* 매우 작은 화면 (예: 작은 모바일 기기) */
+@media (max-width: 480px) {
+  body {
+    margin: 10px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 8px;
+    font-size: 14px;
+  }
 }

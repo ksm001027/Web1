@@ -18,7 +18,7 @@
   <p th:if="${message}" th:text="${message}"></p>
 
   <h2>업로드된 파일 목록</h2>
-  <ul>
+  <ulWS>
     <li th:each="file : ${files}">
       <span th:text="${file.filename}">Filename</span>
       <form method="post" th:action="@{/delete}" style="display:inline;">
@@ -26,7 +26,7 @@
         <button type="submit">Delete</button>
       </form>
     </li>
-  </ul>
+  </ulWS>
 
   <div class="button-container">
     <a href="/downloads" class="button">다운로드 페이지로 이동</a>

@@ -4,17 +4,24 @@ body {
   margin: 0;
   padding: 20px;
   color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
 h1 {
   text-align: center;
   color: #5a5a5a;
+  margin-bottom: 20px;
 }
 
 .quiz-choice-container {
   display: flex;
-  justify-content: center;
-  margin-top: 50px;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .choice-button {
@@ -30,6 +37,8 @@ h1 {
   transition: background-color 0.3s;
   cursor: pointer;
   border-radius: 5px;
+  width: 100%;
+  max-width: 300px;
 }
 
 .choice-button:hover {
@@ -38,7 +47,8 @@ h1 {
 
 .menu-button-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 20px;
 }
 
@@ -55,8 +65,42 @@ h1 {
   transition: background-color 0.3s;
   cursor: pointer;
   border-radius: 5px;
+  width: 100%;
+  max-width: 300px;
 }
 
 .menu-button:hover {
   background-color: #0056b3;
+}
+
+/* 화면 비율에 따라 스타일 조정 */
+@media (min-width: 601px) and (max-width: 1200px) {
+  .quiz-choice-container, .menu-button-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .choice-button, .menu-button {
+    margin: 10px;
+    width: calc(50% - 20px);
+  }
+}
+
+@media (min-width: 1201px) {
+  .quiz-choice-container, .menu-button-container {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .choice-button, .menu-button {
+    margin: 10px;
+    width: calc(33.33% - 20px);
+  }
+}
+
+@media (max-width: 600px) {
+  .choice-button, .menu-button {
+    width: 100%;
+  }
 }

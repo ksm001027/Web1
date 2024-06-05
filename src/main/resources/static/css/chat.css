@@ -1,3 +1,4 @@
+/* 기본 스타일 설정 */
 body {
   font-family: 'Arial', sans-serif;
   background-color: #f0f2f5;
@@ -125,10 +126,11 @@ button:hover {
   justify-content: center;
 }
 
-.close-button:hover {
+close-button:hover {
   background-color: darkred;
 }
 
+/* 반응형 스타일 설정 */
 @media (max-width: 600px) {
   #chat-room {
     width: 100%;
