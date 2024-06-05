@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,9 @@ public class FileService {
 
   private final FileRepository fileRepository;
   private final MemberRepository memberRepository;
+
+  // 임시 세션 ID 저장소 (예시: 간단한 ConcurrentHashMap 사용)
+  private final ConcurrentHashMap<String, Long> temporarySessions = new ConcurrentHashMap<>();
 
   public void saveFile(MultipartFile file, Long memberId) throws Exception {
     System.out.println("Saving file for memberId: " + memberId); // 로그 추가
@@ -74,5 +79,15 @@ public class FileService {
     Files.deleteIfExists(path);
 
     fileRepository.delete(fileEntity);
+  }
+
+  public String createTemporarySession(Long memberId) {
+    String tempSessionId = UUID.randomUUID().toString();
+    temporarySessions.put(tempSessionId, memberId);
+    return tempSessionId;
+  }
+
+  public Long validateTemporarySession(String tempSessionId) {
+    return temporarySessions.get(tempSessionId);
   }
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -52,8 +51,16 @@ public class FileController {
   }
 
   @GetMapping("/downloads")
-  public String showFiles(HttpSession session, Model model) {
+  public String showFiles(@RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
     Long memberId = (Long) session.getAttribute("memberId");
+
+    if (memberId == null && tempSessionId != null) {
+      memberId = validateTemporarySessionAndGetMemberId(tempSessionId);
+      if (memberId != null) {
+        session.setAttribute("memberId", memberId);
+      }
+    }
+
     if (memberId == null) {
       model.addAttribute("message", "로그인이 필요합니다.");
       return "redirect:/member/login";
@@ -62,10 +69,19 @@ public class FileController {
     List<FileEntity> files = fileService.getFilesByMemberId(memberId);
     model.addAttribute("files", files);
     model.addAttribute("memberId", memberId);
-    model.addAttribute("serverAddress", serverAddress);  // serverAddress 변수를 모델에 추가
+    model.addAttribute("serverAddress", serverAddress);
+
+    // QR 코드 URL 생성을 QRCodeController로 위임
+    String qrCodeUrl = serverAddress + "/generate-qr?memberId=" + memberId;
+    model.addAttribute("qrCodeUrl", qrCodeUrl);
+
     return "download";
   }
 
+  // 임시 세션 ID 검증 메서드
+  private Long validateTemporarySessionAndGetMemberId(String tempSessionId) {
+    return fileService.validateTemporarySession(tempSessionId);
+  }
 
   @GetMapping("/download")
   public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename, HttpSession session) {

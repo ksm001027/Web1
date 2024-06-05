@@ -15,8 +15,8 @@
     </li>
   </ul>
   <div>
-    <img th:src="@{'/generate-qr?url=' + ${serverAddress} + '/downloads?memberId=' + ${memberId} }" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
-    <p th:text="${serverAddress} + '/downloads'" style="margin-top: 10px;"></p> <!-- QR 코드 아래에 URL을 표시 -->
+    <img th:src="@{'/generate-qr?memberId=' + ${memberId}}" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
+    <p th:text="${serverAddress} + '/redirect-download?tempSessionId=' + ${tempSessionId}" style="margin-top: 10px;"></p> <!-- QR 코드 아래에 URL을 표시 -->
   </div>
 </div>
 </body>
