@@ -29,6 +29,12 @@ function showMessage(message) {
   const messageElement = document.createElement('div');
   messageElement.className = 'message';
 
+  if (message.sender === document.getElementById('usernameInput').value.trim()) {
+    messageElement.classList.add('my-message');
+  } else {
+    messageElement.classList.add('their-message');
+  }
+
   const usernameElement = document.createElement('span');
   usernameElement.className = 'username';
   usernameElement.appendChild(document.createTextNode(message.sender));

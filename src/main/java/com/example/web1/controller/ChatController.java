@@ -14,8 +14,9 @@ public class ChatController {
   public ChatMessage sendMessage(ChatMessage chatMessage) {
     return chatMessage;
   }
+
   @GetMapping("/chat")
-    public String chat() {
-      return "chat";
-    }
+  public String chat() {
+    return "chat";
+  }
 }
