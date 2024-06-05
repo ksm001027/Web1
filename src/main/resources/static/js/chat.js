@@ -1,115 +1,63 @@
-document.addEventListener('DOMContentLoaded', function() {
-  var stompClient = null;
-  var username = null;
+let stompClient = null;
 
-  function connect() {
-    var socket = new SockJS('/chat');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('/topic/public', function (message) {
-        showMessage(JSON.parse(message.body));
-      });
-    }, function(error) {
-      console.error('STOMP error: ' + error);
+function connect() {
+  const socket = new SockJS('/chat');
+  stompClient = Stomp.over(socket);
+  stompClient.connect({}, function (frame) {
+    console.log('Connected: ' + frame);
+    stompClient.subscribe('/topic/public', function (messageOutput) {
+      showMessage(JSON.parse(messageOutput.body));
     });
+  });
+}
+
+function sendMessage() {
+  const username = document.getElementById('usernameInput').value.trim();
+  const messageContent = document.getElementById('messageInput').value.trim();
+
+  if (messageContent && stompClient) {
+    const chatMessage = {
+      sender: username,
+      content: messageContent,
+      type: 'CHAT'
+    };
+    stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage));
   }
+}
 
-  function sendMessage() {
-    if (!username) {
-      username = document.getElementById('usernameInput').value.trim();
-      if (!username) {
-        alert('이름을 입력하세요.');
-        return;
-      }
-      document.getElementById('usernameInput').readOnly = true;
-    }
+function showMessage(message) {
+  const messageElement = document.createElement('div');
+  messageElement.className = 'message';
 
-    var messageContent = document.getElementById('messageInput').value.trim();
-    if (messageContent && stompClient) {
-      var chatMessage = {
-        sender: username,
-        content: messageContent,
-        type: 'CHAT'
-      };
-      stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage));
-      document.getElementById('messageInput').value = '';
-    }
-  }
+  const usernameElement = document.createElement('span');
+  usernameElement.className = 'username';
+  usernameElement.appendChild(document.createTextNode(message.sender));
 
-  function showMessage(message) {
-    var messages = document.getElementById('messages');
-    var messageElement = document.createElement('div');
-    messageElement.className = 'message';
-    if (message.sender === username) {
-      messageElement.classList.add('my-message');
-    } else {
-      messageElement.classList.add('their-message');
-    }
+  const textElement = document.createElement('p');
+  textElement.appendChild(document.createTextNode(message.content));
 
-    var senderElement = document.createElement('span');
-    senderElement.className = 'sender';
-    senderElement.innerText = message.sender;
+  messageElement.appendChild(usernameElement);
+  messageElement.appendChild(textElement);
 
-    var textElement = document.createElement('p');
-    textElement.innerText = message.content;
+  document.getElementById('messages').appendChild(messageElement);
+}
 
-    messageElement.appendChild(senderElement);
-    messageElement.appendChild(textElement);
-    messages.appendChild(messageElement);
-    messages.scrollTop = messages.scrollHeight; // Scroll to bottom
-  }
-
+window.addEventListener('load', function () {
   connect();
+});
 
-  // Send button event listener
-  document.querySelector('button[onclick="sendMessage()"]').addEventListener('click', function() {
-    sendMessage();
-  });
-
-  // Enter key event listener
-  document.getElementById('messageInput').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-      sendMessage();
-    }
-  });
-
-  // QR 코드 표시/숨기기 토글 함수
-  function toggleQRCode() {
-    const qrCodeContainer = document.getElementById('qrcode-container');
-    if (qrCodeContainer.style.display === 'none' || qrCodeContainer.style.display === '') {
-      if (!document.getElementById('qrcode').src) {
-        fetchQRCode();
-      }
-      qrCodeContainer.style.display = 'block';
-    } else {
-      qrCodeContainer.style.display = 'none';
-    }
-  }
-
-  // QR 코드 생성 및 표시 함수
-  function fetchQRCode() {
-    const currentUrl = window.location.href;
-    fetch(`/generate-qr?url=${encodeURIComponent(currentUrl)}`)
+function toggleQRCode() {
+  const qrContainer = document.getElementById('qrcode-container');
+  if (qrContainer.style.display === 'none' || qrContainer.style.display === '') {
+    const url = window.location.href;
+    fetch(`/generate-qr?url=${encodeURIComponent(url)}`)
       .then(response => response.blob())
       .then(blob => {
         const url = URL.createObjectURL(blob);
         document.getElementById('qrcode').src = url;
-      })
-      .catch(error => console.error('Error fetching QR code:', error));
+        qrContainer.style.display = 'block';
+      });
+  } else {
+    qrContainer.style.display = 'none';
   }
-
-  // QR 코드 버튼 이벤트 리스너
-  document.getElementById('showQRButton').addEventListener('click', function() {
-    toggleQRCode();
-  });
-
-  document.getElementById('hideQRButton').addEventListener('click', function() {
-    toggleQRCode();
-  });
-
-  // 초기에는 QR 코드를 숨김
-  window.onload = function() {
-    document.getElementById('qrcode-container').style.display = 'none';
-  };
-});
+}
