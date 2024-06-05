@@ -31,16 +31,21 @@ public class ObjectiveSurvey {
   @OneToMany(mappedBy = "objectiveSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Answer> answers;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id", nullable = false)
+  private MemberEntity member;
+
   public ObjectiveSurvey() {
   }
 
-  public ObjectiveSurvey(String title, String question, String option1, String option2, String option3, String option4) {
+  public ObjectiveSurvey(String title, String question, String option1, String option2, String option3, String option4, MemberEntity member) {
     this.title = title;
     this.question = question;
     this.option1 = option1;
     this.option2 = option2;
     this.option3 = option3;
     this.option4 = option4;
+    this.member = member;
   }
 
   // Getters and setters
@@ -106,5 +111,13 @@ public class ObjectiveSurvey {
 
   public void setAnswers(List<Answer> answers) {
     this.answers = answers;
+  }
+
+  public MemberEntity getMember() {
+    return member;
+  }
+
+  public void setMember(MemberEntity member) {
+    this.member = member;
   }
 }

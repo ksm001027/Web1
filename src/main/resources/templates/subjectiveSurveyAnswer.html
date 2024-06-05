@@ -27,9 +27,9 @@
 </div>
 <div>
   <h2>설문조사 QR 코드</h2>
-  <img th:src="@{'/generate-qr?url=' + ${serverAddress} + '/survey/subjectiveSurveyAnswer/' + ${survey.id}}" alt="QR Code">
+  <img th:src="@{'/generate-qr?memberId=' + ${survey.member.memberId} + '&purpose=subjectiveSurvey&id=' + ${survey.id}}" alt="QR Code">
+  <!-- QR 코드 아래에 URL을 표시 -->
+  <p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" style="margin-top: 10px;"></p>
 </div>
-<!-- QR 코드 아래에 URL을 표시 -->
-<p th:text="${serverAddress} + '/survey/subjectiveSurveyAnswer/' + ${survey.id}" style="margin-top: 10px;"></p>
 </body>
 </html>

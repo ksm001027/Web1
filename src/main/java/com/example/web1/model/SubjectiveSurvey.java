@@ -19,12 +19,17 @@ public class SubjectiveSurvey {
   @OneToMany(mappedBy = "subjectiveSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Answer> answers;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id", nullable = false)
+  private MemberEntity member;
+
   public SubjectiveSurvey() {
   }
 
-  public SubjectiveSurvey(String title, String question) {
+  public SubjectiveSurvey(String title, String question, MemberEntity member) {
     this.title = title;
     this.question = question;
+    this.member = member;
   }
 
   // Getters and setters
@@ -58,5 +63,13 @@ public class SubjectiveSurvey {
 
   public void setAnswers(List<Answer> answers) {
     this.answers = answers;
+  }
+
+  public MemberEntity getMember() {
+    return member;
+  }
+
+  public void setMember(MemberEntity member) {
+    this.member = member;
   }
 }

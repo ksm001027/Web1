@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -60,12 +60,14 @@ public class FileController {
     }
 
     List<FileEntity> files = fileService.getFilesByMemberId(memberId);
+    String tempSessionId = createTemporarySession(memberId);
+
     model.addAttribute("files", files);
     model.addAttribute("memberId", memberId);
-    model.addAttribute("serverAddress", serverAddress);  // serverAddress 변수를 모델에 추가
+    model.addAttribute("serverAddress", serverAddress);
+    model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
     return "download";
   }
-
 
   @GetMapping("/download")
   public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename, HttpSession session) {
@@ -124,5 +126,29 @@ public class FileController {
     }
 
     return "redirect:/uploadForm";
+  }
+
+  @GetMapping("/redirect-download")
+  public String redirectToDownload(@RequestParam("tempSessionId") String tempSessionId, HttpSession session, Model model) {
+    // 임시 세션 ID 검증 로직 구현 (예: 세션 저장소에서 memberId 조회)
+    Long memberId = validateTemporarySessionAndGetMemberId(tempSessionId);
+    if (memberId != null) {
+      session.setAttribute("memberId", memberId);
+      return "redirect:/downloads";
+    } else {
+      model.addAttribute("message", "유효하지 않은 세션입니다.");
+      return "error"; // 오류 페이지로 리다이렉트
+    }
+  }
+
+  private Long validateTemporarySessionAndGetMemberId(String tempSessionId) {
+    // 임시 세션 ID를 검증하고 유효한 경우 memberId 반환 (예: 세션 저장소에서 조회)
+    // 여기서는 예제로 임의의 memberId를 반환합니다.
+    return 1L; // 실제 구현에서는 저장된 세션 정보를 조회하여 memberId를 반환해야 합니다.
+  }
+
+  private String createTemporarySession(Long memberId) {
+    // 임시 세션 ID 생성 로직 구현 (예: UUID 사용)
+    return UUID.randomUUID().toString();
   }
 }
