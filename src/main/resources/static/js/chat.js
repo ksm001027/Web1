@@ -1,11 +1,12 @@
 let stompClient = null;
+let roomId = null;
 
 function connect() {
   const socket = new SockJS('/chat');
   stompClient = Stomp.over(socket);
   stompClient.connect({}, function (frame) {
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/public', function (messageOutput) {
+    stompClient.subscribe('/topic/public/' + roomId, function (messageOutput) {
       showMessage(JSON.parse(messageOutput.body));
     });
   });
@@ -21,7 +22,7 @@ function sendMessage() {
       content: messageContent,
       type: 'CHAT'
     };
-    stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage));
+    stompClient.send("/app/sendMessage/" + roomId, {}, JSON.stringify(chatMessage));
   }
 }
 
@@ -49,6 +50,7 @@ function showMessage(message) {
 }
 
 window.addEventListener('load', function () {
+  roomId = window.location.pathname.split('/').pop();
   connect();
 });
 

@@ -2,6 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Room</title>
   <link rel="stylesheet" href="/css/chat.css">
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
@@ -19,15 +20,12 @@
     <button id="showQRButton" onclick="toggleQRCode()">QR코드</button>
   </div>
   <!-- QR 코드를 표시할 요소 -->
-  <div id="qrcode-container" class="qrcode-container">
+  <div id="qrcode-container" class="qrcode-container" style="display: none;">
     <img id="qrcode" alt="QR Code">
     <button id="hideQRButton" class="close-button" onclick="toggleQRCode()">X</button>
   </div>
 </div>
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const title = decodeURIComponent(urlParams.get('title'));
-  document.getElementById('chat-room-title').textContent = title ? title : '채팅방';
 
   // chat.js를 로드
   const script = document.createElement('script');

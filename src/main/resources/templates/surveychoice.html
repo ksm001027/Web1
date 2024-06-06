@@ -10,14 +10,14 @@
 <body>
 <h1>설문조사 선택</h1>
 <div class="survey-choice-container">
-  <a th:href="@{/survey/subjectiveSurvey}" class="choice-button">주관식 설문조사 등록</a>
-  <a th:href="@{/survey/objectiveSurvey}" class="choice-button">객관식 설문조사 등록</a>
+  <a th:href="@{/subjectiveSurvey}" class="choice-button">주관식 설문조사 등록</a>
+  <a th:href="@{/objectiveSurvey}" class="choice-button">객관식 설문조사 등록</a>
 </div>
 <div class="survey-list-container">
   <h2>등록된 주관식 설문조사</h2>
   <ul>
     <li th:each="survey : ${subjectiveSurveys}">
-      <a th:href="@{'/quiz/subjectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
+      <a th:href="@{'/survey/subjectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
       <form th:action="@{'/survey/deleteSubjectiveSurvey/' + ${survey.id}}" method="post" style="display:inline;">
         <button type="submit" class="delete-button">삭제</button>
       </form>
@@ -26,7 +26,7 @@
   <h2>등록된 객관식 설문조사</h2>
   <ul>
     <li th:each="survey : ${objectiveSurveys}">
-      <a th:href="@{'/quiz/objectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
+      <a th:href="@{'/survey/objectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
       <form th:action="@{'/survey/deleteObjectiveSurvey/' + ${survey.id}}" method="post" style="display:inline;">
         <button type="submit" class="delete-button">삭제</button>
       </form>

@@ -41,6 +41,18 @@ public class SurveyController {
     return "objectiveSurveyAnswer";
   }
 
+  @GetMapping("/subjectiveSurvey")
+  public String getSubjectiveSurveyForm(Model model) {
+    model.addAttribute("serverAddress", serverAddress);
+    return "subjectiveSurveyForm"; // 주관식 설문조사 등록 페이지로 이동
+  }
+
+  @GetMapping("/objectiveSurvey")
+  public String getObjectiveSurveyForm(Model model) {
+    model.addAttribute("serverAddress", serverAddress);
+    return "objectiveSurveyForm"; // 객관식 설문조사 등록 페이지로 이동
+  }
+
   @PostMapping("/submitObjective")
   public String submitObjectiveSurvey(
     @RequestParam String surveyTitle,

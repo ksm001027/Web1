@@ -16,11 +16,6 @@ public class WebController {
     return "redirect:/chat/" + randomString;
   }
 
-  @GetMapping("/chat/{randomString}")
-  public String showChatPage(@PathVariable String randomString) {
-    return "chat"; // chat.html을 직접 반환 (templates 폴더에 있어야 함)
-  }
-
   @GetMapping("/web-menu")
   public String webMenu() {
     return "menu"; // menu.html (기능 선택 페이지)
@@ -60,6 +55,7 @@ public class WebController {
   public String showResultPage() {
     return "result"; // result.html로 매핑
   }
+
 
   @GetMapping("/subjectiveSurvey")
   public String showSubjectiveSurvey() {
