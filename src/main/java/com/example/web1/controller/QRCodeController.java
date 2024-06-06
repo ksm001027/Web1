@@ -1,6 +1,7 @@
 package com.example.web1.controller;
 
 import com.example.web1.service.FileService;
+import com.example.web1.service.SurveyService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -27,11 +28,17 @@ public class QRCodeController {
   private String serverAddress;
 
   private final FileService fileService;
+  private final SurveyService surveyService;
 
   @GetMapping("/generate-qr")
   public ResponseEntity<byte[]> generateQRCode(@RequestParam("memberId") Long memberId, @RequestParam("purpose") String purpose, @RequestParam("id") Long id) {
     try {
-      String tempSessionId = fileService.createTemporarySession(memberId);
+      String tempSessionId;
+      if (purpose.equals("fileDownload")) {
+        tempSessionId = fileService.createTemporarySession(memberId);
+      } else {
+        tempSessionId = surveyService.createTemporarySession(memberId);
+      }
       String url = generateUrlWithSession(purpose, id, tempSessionId);
 
       int width = 350;
@@ -47,7 +54,7 @@ public class QRCodeController {
 
       System.out.println("Generated QR Code URL: " + url); // 로그 추가
 
-      return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_PNG).body(qrImageBytes);
+      return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_PNG).header("QRCodeURL", url).body(qrImageBytes);
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

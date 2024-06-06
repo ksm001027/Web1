@@ -128,7 +128,9 @@ public class SurveyController {
     Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
     if (survey.isPresent()) {
       model.addAttribute("survey", survey.get());
-      return "subjectiveSurvey";
+      model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+      return "subjectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
     }
@@ -155,6 +157,11 @@ public class SurveyController {
       model.addAttribute("survey", survey.get());
       model.addAttribute("serverAddress", serverAddress);
       model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+
+      // QR 코드 URL을 생성
+      String qrCodeUrl = generateQRCodeUrl(memberId, "objectiveSurveyAnswer", id);
+      model.addAttribute("qrCodeUrl", qrCodeUrl);
+
       return "objectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
@@ -182,6 +189,11 @@ public class SurveyController {
       model.addAttribute("survey", survey.get());
       model.addAttribute("serverAddress", serverAddress);
       model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+
+      // QR 코드 URL을 생성
+      String qrCodeUrl = generateQRCodeUrl(memberId, "subjectiveSurveyAnswer", id);
+      model.addAttribute("qrCodeUrl", qrCodeUrl);
+
       return "subjectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
@@ -261,5 +273,20 @@ public class SurveyController {
   @GetMapping("/result")
   public String showResultPage() {
     return "result";
+  }
+
+  // QR 코드 URL 생성 메서드
+  private String generateQRCodeUrl(Long memberId, String purpose, Long id) {
+    String tempSessionId = surveyService.createTemporarySession(memberId);
+    switch (purpose) {
+      case "fileDownload":
+        return serverAddress + "/redirect-download?tempSessionId=" + tempSessionId;
+      case "objectiveSurveyAnswer":
+        return serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      case "subjectiveSurveyAnswer":
+        return serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      default:
+        throw new IllegalArgumentException("Unknown purpose: " + purpose);
+    }
   }
 }
