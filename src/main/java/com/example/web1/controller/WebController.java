@@ -26,11 +26,6 @@ public class WebController {
     return "menu"; // menu.html (기능 선택 페이지)
   }
 
-  @GetMapping("/quizchoice")
-  public String showQuizChoice() {
-    return "quizchoice";  // 'quizchoice.html'을 렌더링
-  }
-
   @GetMapping("/subjective")
   public String showQuiz1() {
     return "subjective";  //

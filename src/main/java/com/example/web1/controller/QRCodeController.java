@@ -2,6 +2,7 @@ package com.example.web1.controller;
 
 import com.example.web1.service.FileService;
 import com.example.web1.service.SurveyService;
+import com.example.web1.service.QuizService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -29,6 +30,7 @@ public class QRCodeController {
 
   private final FileService fileService;
   private final SurveyService surveyService;
+  private final QuizService quizService;
 
   @GetMapping("/generate-qr")
   public ResponseEntity<byte[]> generateQRCode(@RequestParam("memberId") Long memberId, @RequestParam("purpose") String purpose, @RequestParam("id") Long id) {
@@ -36,8 +38,10 @@ public class QRCodeController {
       String tempSessionId;
       if (purpose.equals("fileDownload")) {
         tempSessionId = fileService.createTemporarySession(memberId);
-      } else {
+      } else if (purpose.equals("survey")) {
         tempSessionId = surveyService.createTemporarySession(memberId);
+      } else {
+        tempSessionId = quizService.createTemporarySession(memberId);
       }
       String url = generateUrlWithSession(purpose, id, tempSessionId);
 
@@ -69,6 +73,10 @@ public class QRCodeController {
         return serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
       case "subjectiveSurveyAnswer":
         return serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      case "objectiveQuiz":
+        return serverAddress + "/quiz/objectiveQuiz/" + id + "?tempSessionId=" + tempSessionId;
+      case "subjectiveQuiz":
+        return serverAddress + "/quiz/subjectiveQuiz/" + id + "?tempSessionId=" + tempSessionId;
       default:
         throw new IllegalArgumentException("Unknown purpose: " + purpose);
     }

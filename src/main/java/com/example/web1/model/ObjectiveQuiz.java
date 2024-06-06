@@ -30,10 +30,14 @@ public class ObjectiveQuiz {
   @Column(name = "correct_answer", nullable = false)
   private int correctAnswerIndex;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id", nullable = false)
+  private MemberEntity member;
+
   public ObjectiveQuiz() {
   }
 
-  public ObjectiveQuiz(String title, String question, String option1, String option2, String option3, String option4, int correctAnswerIndex) {
+  public ObjectiveQuiz(String title, String question, String option1, String option2, String option3, String option4, int correctAnswerIndex, MemberEntity member) {
     this.title = title;
     this.question = question;
     this.option1 = option1;
@@ -41,6 +45,7 @@ public class ObjectiveQuiz {
     this.option3 = option3;
     this.option4 = option4;
     this.correctAnswerIndex = correctAnswerIndex;
+    this.member = member;
   }
 
   // Getters and setters
@@ -106,5 +111,13 @@ public class ObjectiveQuiz {
 
   public void setCorrectAnswerIndex(int correctAnswerIndex) {
     this.correctAnswerIndex = correctAnswerIndex;
+  }
+
+  public MemberEntity getMember() {
+    return member;
+  }
+
+  public void setMember(MemberEntity member) {
+    this.member = member;
   }
 }

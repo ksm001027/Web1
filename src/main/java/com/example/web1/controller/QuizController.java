@@ -2,6 +2,8 @@ package com.example.web1.controller;
 
 import com.example.web1.model.ObjectiveQuiz;
 import com.example.web1.model.SubjectiveQuiz;
+import com.example.web1.model.MemberEntity;
+import com.example.web1.repository.MemberRepository;
 import com.example.web1.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -18,6 +22,9 @@ public class QuizController {
 
   @Autowired
   private QuizService quizService;
+
+  @Autowired
+  private MemberRepository memberRepository;
 
   @Value("${app.server.address}")
   private String serverAddress;
@@ -31,14 +38,28 @@ public class QuizController {
     @RequestParam String option3,
     @RequestParam String option4,
     @RequestParam int correctAnswer,
+    HttpSession session,
     RedirectAttributes redirectAttributes) {
 
-    ObjectiveQuiz quiz = new ObjectiveQuiz(quizTitle, question, option1, option2, option3, option4, correctAnswer);
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    Optional<MemberEntity> memberOpt = memberRepository.findById(memberId);
+    if (!memberOpt.isPresent()) {
+      redirectAttributes.addFlashAttribute("message", "유효하지 않은 사용자입니다.");
+      return "redirect:/member/login";
+    }
+
+    MemberEntity member = memberOpt.get();
+    ObjectiveQuiz quiz = new ObjectiveQuiz(quizTitle, question, option1, option2, option3, option4, correctAnswer, member);
     boolean isSaved = quizService.saveObjectiveQuiz(quiz);
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "객관식 퀴즈가 성공적으로 등록되었습니다!");
-      return "redirect:/quiz/objectiveQuiz/" + quiz.getId(); // 퀴즈 ID로 이동
+      return "redirect:/quiz/objectiveQuiz/" + quiz.getId();
     } else {
       redirectAttributes.addFlashAttribute("message", "객관식 퀴즈 등록에 실패하였습니다.");
       return "redirect:/quiz/failure";
@@ -50,27 +71,77 @@ public class QuizController {
     @RequestParam String quizTitle,
     @RequestParam String question,
     @RequestParam String answer,
+    HttpSession session,
     RedirectAttributes redirectAttributes) {
 
-    SubjectiveQuiz quiz = new SubjectiveQuiz(quizTitle, question, answer);
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    Optional<MemberEntity> memberOpt = memberRepository.findById(memberId);
+    if (!memberOpt.isPresent()) {
+      redirectAttributes.addFlashAttribute("message", "유효하지 않은 사용자입니다.");
+      return "redirect:/member/login";
+    }
+
+    MemberEntity member = memberOpt.get();
+    SubjectiveQuiz quiz = new SubjectiveQuiz(quizTitle, question, answer, member);
     boolean isSaved = quizService.saveSubjectiveQuiz(quiz);
 
     if (isSaved) {
       redirectAttributes.addFlashAttribute("message", "주관식 퀴즈가 성공적으로 등록되었습니다!");
-      return "redirect:/quiz/subjectiveQuiz/" + quiz.getId(); // 퀴즈 ID로 이동
+      return "redirect:/quiz/subjectiveQuiz/" + quiz.getId();
     } else {
       redirectAttributes.addFlashAttribute("message", "주관식 퀴즈 등록에 실패하였습니다.");
       return "redirect:/quiz/failure";
     }
   }
 
+  @GetMapping("/quizChoice")
+  public String getQuizChoice(HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    List<SubjectiveQuiz> subjectiveQuizzes = quizService.getSubjectiveQuizzesByMemberId(memberId);
+    List<ObjectiveQuiz> objectiveQuizzes = quizService.getObjectiveQuizzesByMemberId(memberId);
+
+    model.addAttribute("subjectiveQuizzes", subjectiveQuizzes);
+    model.addAttribute("objectiveQuizzes", objectiveQuizzes);
+    return "quizchoice";
+  }
+
   @GetMapping("/subjectiveQuiz/{id}")
-  public String getSubjectiveQuiz(@PathVariable Long id, Model model) {
+  public String getSubjectiveQuiz(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+
+    if (memberId == null && tempSessionId != null) {
+      memberId = quizService.validateTemporarySessionAndGetMemberId(tempSessionId);
+      if (memberId != null) {
+        session.setAttribute("memberId", memberId);
+      }
+    }
+
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
     Optional<SubjectiveQuiz> quiz = quizService.getSubjectiveQuizById(id);
     if (quiz.isPresent()) {
       model.addAttribute("quiz", quiz.get());
-      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
-      return "subjectiveQuiz"; // subjectiveQuiz.html로 매핑
+      model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("tempSessionId", tempSessionId);
+
+      // QR 코드 URL을 생성
+      String qrCodeUrl = generateQRCodeUrl(memberId, "subjectiveQuiz", id);
+      model.addAttribute("qrCodeUrl", qrCodeUrl);
+
+      return "subjectiveQuiz";
     } else {
       return "quizNotFound";
     }
@@ -92,12 +163,32 @@ public class QuizController {
   }
 
   @GetMapping("/objectiveQuiz/{id}")
-  public String getObjectiveQuiz(@PathVariable Long id, Model model) {
+  public String getObjectiveQuiz(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+
+    if (memberId == null && tempSessionId != null) {
+      memberId = quizService.validateTemporarySessionAndGetMemberId(tempSessionId);
+      if (memberId != null) {
+        session.setAttribute("memberId", memberId);
+      }
+    }
+
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
     Optional<ObjectiveQuiz> quiz = quizService.getObjectiveQuizById(id);
     if (quiz.isPresent()) {
       model.addAttribute("quiz", quiz.get());
-      model.addAttribute("serverAddress", serverAddress); // 서버 주소를 모델에 추가
-      return "objectiveQuiz"; // objectiveQuiz.html로 매핑
+      model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("tempSessionId", tempSessionId);
+
+      // QR 코드 URL을 생성
+      String qrCodeUrl = generateQRCodeUrl(memberId, "objectiveQuiz", id);
+      model.addAttribute("qrCodeUrl", qrCodeUrl);
+
+      return "objectiveQuiz";
     } else {
       return "quizNotFound";
     }
@@ -120,6 +211,12 @@ public class QuizController {
 
   @GetMapping("/result")
   public String showResultPage() {
-    return "result"; // result.html로 매핑
+    return "result";
+  }
+
+  // QR 코드 URL 생성 메서드
+  private String generateQRCodeUrl(Long memberId, String purpose, Long id) {
+    String tempSessionId = quizService.createTemporarySession(memberId);
+    return serverAddress + "/quiz/" + purpose + "/" + id + "?tempSessionId=" + tempSessionId;
   }
 }

@@ -1,7 +1,9 @@
 package com.example.web1.model;
 
 import jakarta.persistence.*;
+
 @Entity
+@Table(name = "subjective_quiz")
 public class SubjectiveQuiz {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,13 +18,18 @@ public class SubjectiveQuiz {
   @Column(nullable = false)
   private String answer; // 주관식 퀴즈 정답
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id", nullable = false)
+  private MemberEntity member;
+
   public SubjectiveQuiz() {
   }
 
-  public SubjectiveQuiz(String title, String question, String answer) {
+  public SubjectiveQuiz(String title, String question, String answer, MemberEntity member) {
     this.title = title;
     this.question = question;
     this.answer = answer;
+    this.member = member;
   }
 
   // Getters and Setters
@@ -56,5 +63,13 @@ public class SubjectiveQuiz {
 
   public void setAnswer(String answer) {
     this.answer = answer;
+  }
+
+  public MemberEntity getMember() {
+    return member;
+  }
+
+  public void setMember(MemberEntity member) {
+    this.member = member;
   }
 }
