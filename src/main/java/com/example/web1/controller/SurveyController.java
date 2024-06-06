@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -70,9 +69,8 @@ public class SurveyController {
     boolean isSaved = surveyService.saveObjectiveSurvey(survey, memberId);
 
     if (isSaved) {
-      String tempSessionId = surveyService.createTemporarySession(memberId);
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사가 성공적으로 등록되었습니다!");
-      return "redirect:/survey/objectiveSurveyAnswer/" + survey.getId() + "?tempSessionId=" + tempSessionId;
+      return "redirect:/survey/objectiveSurveyAnswer/" + survey.getId();
     } else {
       redirectAttributes.addFlashAttribute("message", "객관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
@@ -103,9 +101,8 @@ public class SurveyController {
     boolean isSaved = surveyService.saveSubjectiveSurvey(survey, memberId);
 
     if (isSaved) {
-      String tempSessionId = surveyService.createTemporarySession(memberId);
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사가 성공적으로 등록되었습니다!");
-      return "redirect:/survey/subjectiveSurveyAnswer/" + survey.getId() + "?tempSessionId=" + tempSessionId;
+      return "redirect:/survey/subjectiveSurveyAnswer/" + survey.getId();
     } else {
       redirectAttributes.addFlashAttribute("message", "주관식 설문조사 등록에 실패하였습니다.");
       return "redirect:/survey/failure";
@@ -131,7 +128,9 @@ public class SurveyController {
     Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
     if (survey.isPresent()) {
       model.addAttribute("survey", survey.get());
-      return "subjectiveSurvey";
+      model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+      return "subjectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
     }
@@ -155,14 +154,14 @@ public class SurveyController {
 
     Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
     if (survey.isPresent()) {
-      ObjectiveSurvey surveyData = survey.get();
-      if (tempSessionId == null) {
-        tempSessionId = surveyService.createTemporarySession(memberId);
-      }
-      String qrCodeUrl = serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
-      model.addAttribute("survey", surveyData);
+      model.addAttribute("survey", survey.get());
       model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+
+      // QR 코드 URL을 생성
+      String qrCodeUrl = generateQRCodeUrl(memberId, "objectiveSurveyAnswer", id);
       model.addAttribute("qrCodeUrl", qrCodeUrl);
+
       return "objectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
@@ -187,14 +186,14 @@ public class SurveyController {
 
     Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
     if (survey.isPresent()) {
-      SubjectiveSurvey surveyData = survey.get();
-      if (tempSessionId == null) {
-        tempSessionId = surveyService.createTemporarySession(memberId);
-      }
-      String qrCodeUrl = serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
-      model.addAttribute("survey", surveyData);
+      model.addAttribute("survey", survey.get());
       model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+
+      // QR 코드 URL을 생성
+      String qrCodeUrl = generateQRCodeUrl(memberId, "subjectiveSurveyAnswer", id);
       model.addAttribute("qrCodeUrl", qrCodeUrl);
+
       return "subjectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
@@ -274,5 +273,20 @@ public class SurveyController {
   @GetMapping("/result")
   public String showResultPage() {
     return "result";
+  }
+
+  // QR 코드 URL 생성 메서드
+  private String generateQRCodeUrl(Long memberId, String purpose, Long id) {
+    String tempSessionId = surveyService.createTemporarySession(memberId);
+    switch (purpose) {
+      case "fileDownload":
+        return serverAddress + "/redirect-download?tempSessionId=" + tempSessionId;
+      case "objectiveSurveyAnswer":
+        return serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      case "subjectiveSurveyAnswer":
+        return serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      default:
+        throw new IllegalArgumentException("Unknown purpose: " + purpose);
+    }
   }
 }

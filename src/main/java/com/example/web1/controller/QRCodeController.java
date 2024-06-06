@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,13 +27,18 @@ public class QRCodeController {
   @Value("${app.server.address}")
   private String serverAddress;
 
-  private final SurveyService surveyService;
   private final FileService fileService;
+  private final SurveyService surveyService;
 
   @GetMapping("/generate-qr")
   public ResponseEntity<byte[]> generateQRCode(@RequestParam("memberId") Long memberId, @RequestParam("purpose") String purpose, @RequestParam("id") Long id) {
     try {
-      String tempSessionId = createTemporarySession(memberId);
+      String tempSessionId;
+      if (purpose.equals("fileDownload")) {
+        tempSessionId = fileService.createTemporarySession(memberId);
+      } else {
+        tempSessionId = surveyService.createTemporarySession(memberId);
+      }
       String url = generateUrlWithSession(purpose, id, tempSessionId);
 
       int width = 350;
@@ -48,25 +52,22 @@ public class QRCodeController {
       MatrixToImageWriter.writeToStream(bitMatrix, "PNG", baos);
       byte[] qrImageBytes = baos.toByteArray();
 
-      return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_PNG).body(qrImageBytes);
+      System.out.println("Generated QR Code URL: " + url); // 로그 추가
+
+      return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_PNG).header("QRCodeURL", url).body(qrImageBytes);
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
   }
 
-  private String createTemporarySession(Long memberId) {
-    // 임시 세션 ID 생성 로직 구현 (예: UUID 사용)
-    return UUID.randomUUID().toString();
-  }
-
   private String generateUrlWithSession(String purpose, Long id, String tempSessionId) {
     switch (purpose) {
       case "fileDownload":
         return serverAddress + "/redirect-download?tempSessionId=" + tempSessionId;
-      case "objectiveSurvey":
+      case "objectiveSurveyAnswer":
         return serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
-      case "subjectiveSurvey":
+      case "subjectiveSurveyAnswer":
         return serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
       default:
         throw new IllegalArgumentException("Unknown purpose: " + purpose);
