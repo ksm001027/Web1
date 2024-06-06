@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class QuizService {
@@ -20,8 +19,6 @@ public class QuizService {
 
   @Autowired
   private ObjectiveQuizRepository objectiveQuizRepository;
-
-  private final ConcurrentHashMap<String, Long> temporarySessions = new ConcurrentHashMap<>();
 
   public boolean saveSubjectiveQuiz(SubjectiveQuiz quiz) {
     try {
@@ -59,11 +56,33 @@ public class QuizService {
 
   public String createTemporarySession(Long memberId) {
     String tempSessionId = UUID.randomUUID().toString();
-    temporarySessions.put(tempSessionId, memberId);
+    // Save the temp session to the database or a cache with the memberId
     return tempSessionId;
   }
 
   public Long validateTemporarySessionAndGetMemberId(String tempSessionId) {
-    return temporarySessions.get(tempSessionId);
+    // Retrieve the memberId associated with the tempSessionId from the database or a cache
+    return null;
+  }
+
+  // 삭제 메서드 추가
+  public boolean deleteSubjectiveQuiz(Long quizId, Long memberId) {
+    Optional<SubjectiveQuiz> quizOpt = subjectiveQuizRepository.findById(quizId);
+    if (quizOpt.isPresent() && quizOpt.get().getMember().getMemberId().equals(memberId)) {
+      subjectiveQuizRepository.deleteById(quizId);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean deleteObjectiveQuiz(Long quizId, Long memberId) {
+    Optional<ObjectiveQuiz> quizOpt = objectiveQuizRepository.findById(quizId);
+    if (quizOpt.isPresent() && quizOpt.get().getMember().getMemberId().equals(memberId)) {
+      objectiveQuizRepository.deleteById(quizId);
+      return true;
+    } else {
+      return false;
+    }
   }
 }

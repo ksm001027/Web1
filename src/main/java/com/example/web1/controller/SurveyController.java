@@ -90,7 +90,7 @@ public class SurveyController {
 
     model.addAttribute("subjectiveSurveys", subjectiveSurveys);
     model.addAttribute("objectiveSurveys", objectiveSurveys);
-    return "surveychoice";  // 여기서 소문자로 맞춰줍니다.
+    return "surveychoice";
   }
 
   @PostMapping("/submitSubjective")
@@ -288,7 +288,31 @@ public class SurveyController {
 
   @GetMapping("/result")
   public String showResultPage() {
-    return "result";
+    return "result"; // result.html로 매핑
+  }
+
+  @PostMapping("/deleteObjectiveSurvey/{id}")
+  public String deleteObjectiveSurvey(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
+    if (survey.isPresent()) {
+      surveyService.deleteObjectiveSurveyById(id);
+      redirectAttributes.addFlashAttribute("message", "객관식 설문조사가 성공적으로 삭제되었습니다.");
+    } else {
+      redirectAttributes.addFlashAttribute("message", "설문조사를 찾을 수 없습니다.");
+    }
+    return "redirect:/survey/surveyChoice";
+  }
+
+  @PostMapping("/deleteSubjectiveSurvey/{id}")
+  public String deleteSubjectiveSurvey(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
+    if (survey.isPresent()) {
+      surveyService.deleteSubjectiveSurveyById(id);
+      redirectAttributes.addFlashAttribute("message", "주관식 설문조사가 성공적으로 삭제되었습니다.");
+    } else {
+      redirectAttributes.addFlashAttribute("message", "설문조사를 찾을 수 없습니다.");
+    }
+    return "redirect:/survey/surveyChoice";
   }
 
   // QR 코드 URL 생성 메서드

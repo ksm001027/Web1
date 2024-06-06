@@ -36,6 +36,49 @@ h1 {
   background-color: #45a049;
 }
 
+.quiz-list-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.quiz-list-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.quiz-list-container li {
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.quiz-list-container a {
+  text-decoration: none;
+  color: #007BFF;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.quiz-list-container a:hover {
+  color: #0056b3;
+}
+
+.delete-button {
+  font-size: 0.8em;
+  padding: 2px 5px;
+  margin-left: 10px;
+  background-color: #ff4c4c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.delete-button:hover {
+  background-color: #ff1a1a;
+}
+
 .menu-button-container {
   display: flex;
   justify-content: center;

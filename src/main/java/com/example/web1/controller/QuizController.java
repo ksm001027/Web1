@@ -214,9 +214,57 @@ public class QuizController {
     return "result";
   }
 
+  // 삭제 기능 추가
+  @PostMapping("/deleteSubjectiveQuiz")
+  public String deleteSubjectiveQuiz(@RequestParam Long quizId, HttpSession session, RedirectAttributes redirectAttributes) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    boolean isDeleted = quizService.deleteSubjectiveQuiz(quizId, memberId);
+    if (isDeleted) {
+      redirectAttributes.addFlashAttribute("message", "주관식 퀴즈가 성공적으로 삭제되었습니다.");
+    } else {
+      redirectAttributes.addFlashAttribute("message", "주관식 퀴즈 삭제에 실패하였습니다.");
+    }
+    return "redirect:/quiz/quizChoice";
+  }
+
+  @PostMapping("/deleteObjectiveQuiz")
+  public String deleteObjectiveQuiz(@RequestParam Long quizId, HttpSession session, RedirectAttributes redirectAttributes) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    boolean isDeleted = quizService.deleteObjectiveQuiz(quizId, memberId);
+    if (isDeleted) {
+      redirectAttributes.addFlashAttribute("message", "객관식 퀴즈가 성공적으로 삭제되었습니다.");
+    } else {
+      redirectAttributes.addFlashAttribute("message", "객관식 퀴즈 삭제에 실패하였습니다.");
+    }
+    return "redirect:/quiz/quizChoice";
+  }
+
   // QR 코드 URL 생성 메서드
   private String generateQRCodeUrl(Long memberId, String purpose, Long id) {
     String tempSessionId = quizService.createTemporarySession(memberId);
-    return serverAddress + "/quiz/" + purpose + "/" + id + "?tempSessionId=" + tempSessionId;
+    switch (purpose) {
+      case "fileDownload":
+        return serverAddress + "/redirect-download?tempSessionId=" + tempSessionId;
+      case "objectiveSurveyAnswer":
+        return serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      case "subjectiveSurveyAnswer":
+        return serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
+      case "objectiveQuiz":
+        return serverAddress + "/quiz/objectiveQuiz/" + id + "?tempSessionId=" + tempSessionId;
+      case "subjectiveQuiz":
+        return serverAddress + "/quiz/subjectiveQuiz/" + id + "?tempSessionId=" + tempSessionId;
+      default:
+        throw new IllegalArgumentException("Unknown purpose: " + purpose);
+    }
   }
 }

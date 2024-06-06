@@ -105,6 +105,7 @@ public class SurveyService {
     tempSessionStore.put(tempSessionId, memberId);
     return tempSessionId;
   }
+
   public List<SubjectiveSurvey> getSubjectiveSurveysByMemberId(Long memberId) {
     return subjectiveSurveyRepository.findByMember_MemberId(memberId);
   }
@@ -113,8 +114,15 @@ public class SurveyService {
     return objectiveSurveyRepository.findByMember_MemberId(memberId);
   }
 
-
   public Long validateTemporarySessionAndGetMemberId(String tempSessionId) {
     return tempSessionStore.get(tempSessionId);
+  }
+
+  public void deleteSubjectiveSurveyById(Long id) {
+    subjectiveSurveyRepository.deleteById(id);
+  }
+
+  public void deleteObjectiveSurveyById(Long id) {
+    objectiveSurveyRepository.deleteById(id);
   }
 }
