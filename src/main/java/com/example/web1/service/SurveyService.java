@@ -105,6 +105,14 @@ public class SurveyService {
     tempSessionStore.put(tempSessionId, memberId);
     return tempSessionId;
   }
+  public List<SubjectiveSurvey> getSubjectiveSurveysByMemberId(Long memberId) {
+    return subjectiveSurveyRepository.findByMember_MemberId(memberId);
+  }
+
+  public List<ObjectiveSurvey> getObjectiveSurveysByMemberId(Long memberId) {
+    return objectiveSurveyRepository.findByMember_MemberId(memberId);
+  }
+
 
   public Long validateTemporarySessionAndGetMemberId(String tempSessionId) {
     return tempSessionStore.get(tempSessionId);

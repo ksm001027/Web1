@@ -66,11 +66,6 @@ public class WebController {
     return "result"; // result.html로 매핑
   }
 
-  @GetMapping("/surveychoice")
-  public String showSurveyChoice() {
-    return "surveychoice";  // 'surveychoice.html'을 렌더링
-  }
-
   @GetMapping("/subjectiveSurvey")
   public String showSubjectiveSurvey() {
     return "subjectiveSurvey"; // subjectiveSurvey.html로 매핑

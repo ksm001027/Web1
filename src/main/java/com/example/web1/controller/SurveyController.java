@@ -77,6 +77,22 @@ public class SurveyController {
     }
   }
 
+  @GetMapping("/surveyChoice")
+  public String getSurveyChoice(HttpSession session, Model model) {
+    Long memberId = (Long) session.getAttribute("memberId");
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    List<SubjectiveSurvey> subjectiveSurveys = surveyService.getSubjectiveSurveysByMemberId(memberId);
+    List<ObjectiveSurvey> objectiveSurveys = surveyService.getObjectiveSurveysByMemberId(memberId);
+
+    model.addAttribute("subjectiveSurveys", subjectiveSurveys);
+    model.addAttribute("objectiveSurveys", objectiveSurveys);
+    return "surveychoice";  // 여기서 소문자로 맞춰줍니다.
+  }
+
   @PostMapping("/submitSubjective")
   public String submitSubjectiveSurvey(
     @RequestParam String surveyTitle,
