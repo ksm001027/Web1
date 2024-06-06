@@ -10,6 +10,7 @@
 </head>
 <body>
 <div id="chat-room">
+  <h1 id="chat-room-title"></h1>
   <div id="messages" class="messages"></div>
   <input type="text" id="usernameInput" placeholder="이름을 입력하시오">
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
@@ -23,7 +24,15 @@
     <button id="hideQRButton" class="close-button" onclick="toggleQRCode()">X</button>
   </div>
 </div>
-<script src="/js/chat.js"></script>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const title = decodeURIComponent(urlParams.get('title'));
+  document.getElementById('chat-room-title').textContent = title ? title : '채팅방';
+
+  // chat.js를 로드
+  const script = document.createElement('script');
+  script.src = '/js/chat.js';
+  document.body.appendChild(script);
+</script>
 </body>
 </html>
-chat.html
