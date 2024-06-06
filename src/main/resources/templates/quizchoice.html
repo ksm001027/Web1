@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퀴즈 유형 선택</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/quizchoice.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+</head>
+<body>
+<h1>퀴즈 유형 선택</h1>
+<div class="quiz-choice-container">
+  <a th:href="@{subjective}" class="choice-button">주관식 퀴즈 등록</a>
+  <a th:href="@{objective}" class="choice-button">객관식 퀴즈 등록</a>
+</div>
+<div class="menu-button-container">
+  <a th:href="@{/web-menu}" class="menu-button">메뉴로 이동</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>객관식 설문조사 답변</title>
+  <link rel="stylesheet" href="/css/quiz.css">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+</head>
+<body>
+<h1>객관식 설문조사 답변</h1>
+<div>
+  <p><strong>설문조사 제목:</strong> <span th:text="${survey.title}"></span></p>
+  <p><strong>질문:</strong> <span th:text="${survey.question}"></span></p>
+</div>
+<form action="/survey/submitObjectiveAnswer" method="POST">
+  <input type="hidden" name="surveyId" th:value="${survey.id}">
+  <div class="form-group">
+    <label for="answer">정답을 선택하세요:</label>
+    <select id="answer" name="answer" required>
+      <option value="1" th:text="${survey.option1}"></option>
+      <option value="2" th:text="${survey.option2}"></option>
+      <option value="3" th:text="${survey.option3}"></option>
+      <option value="4" th:text="${survey.option4}"></option>
+    </select>
+  </div>
+  <button type="submit">제출</button>
+</form>
+<p th:if="${result}" th:text="${result}"></p>
+<div class="menu-button-container">
+  <a th:href="@{/survey/objectiveSurveyResult/{id}(id=${survey.id})}" class="menu-button">결과 보기</a>
+</div>
+
+<!-- QR Code Image -->
+<div>
+  <h2>설문조사 QR 코드</h2>
+  <img th:src="@{'/generate-qr?memberId=' + ${survey.member.memberId} + '&purpose=objectiveSurveyAnswer&id=' + ${survey.id}}" alt="QR Code">
+  <!-- QR 코드 아래에 URL을 표시 -->
+  <p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" style="margin-top: 10px;"></p>
+</div>
+</body>
+</html>
