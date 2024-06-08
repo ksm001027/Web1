@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Room</title>
   <link rel="stylesheet" href="/css/chat.css">
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
@@ -10,6 +11,7 @@
 </head>
 <body>
 <div id="chat-room">
+  <h1 id="chat-room-title"></h1>
   <div id="messages" class="messages"></div>
   <input type="text" id="usernameInput" placeholder="이름을 입력하시오">
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
@@ -18,11 +20,17 @@
     <button id="showQRButton" onclick="toggleQRCode()">QR코드</button>
   </div>
   <!-- QR 코드를 표시할 요소 -->
-  <div id="qrcode-container" class="qrcode-container">
+  <div id="qrcode-container" class="qrcode-container" style="display: none;">
     <img id="qrcode" alt="QR Code">
     <button id="hideQRButton" class="close-button" onclick="toggleQRCode()">X</button>
   </div>
 </div>
-<script src="/js/chat.js"></script>
+<script>
+
+  // chat.js를 로드
+  const script = document.createElement('script');
+  script.src = '/js/chat.js';
+  document.body.appendChild(script);
+</script>
 </body>
 </html>

@@ -61,7 +61,12 @@
 =======
 >>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
   <div>
+<<<<<<< HEAD
     <img id="qrImage" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
+=======
+    <img th:src="@{'/generate-qr?memberId=' + ${memberId} + '&purpose=fileDownload&id=' + ${memberId}}" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
+    <p th:text="'QR 코드 URL: ' + ${serverAddress} + '/redirect-download?tempSessionId=' + ${tempSessionId}" style="margin-top: 10px;"></p> <!-- QR 코드 아래에 URL을 표시 -->
+>>>>>>> bc916415288a5954341542681787419a7347a988
   </div>
 </div>
 </body>

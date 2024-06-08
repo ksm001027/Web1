@@ -1,15 +1,16 @@
 package com.example.web1.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "objective_quiz")
-public class ObjectiveQuiz {
+@Table(name = "objective_survey")
+public class ObjectiveSurvey {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "quiz_title", nullable = false)
+  @Column(nullable = false)
   private String title;
 
   @Column(nullable = false)
@@ -27,24 +28,23 @@ public class ObjectiveQuiz {
   @Column(nullable = false)
   private String option4;
 
-  @Column(name = "correct_answer", nullable = false)
-  private int correctAnswerIndex;
+  @OneToMany(mappedBy = "objectiveSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Answer> answers;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id", nullable = false)
   private MemberEntity member;
 
-  public ObjectiveQuiz() {
+  public ObjectiveSurvey() {
   }
 
-  public ObjectiveQuiz(String title, String question, String option1, String option2, String option3, String option4, int correctAnswerIndex, MemberEntity member) {
+  public ObjectiveSurvey(String title, String question, String option1, String option2, String option3, String option4, MemberEntity member) {
     this.title = title;
     this.question = question;
     this.option1 = option1;
     this.option2 = option2;
     this.option3 = option3;
     this.option4 = option4;
-    this.correctAnswerIndex = correctAnswerIndex;
     this.member = member;
   }
 
@@ -105,12 +105,12 @@ public class ObjectiveQuiz {
     this.option4 = option4;
   }
 
-  public int getCorrectAnswerIndex() {
-    return correctAnswerIndex;
+  public List<Answer> getAnswers() {
+    return answers;
   }
 
-  public void setCorrectAnswerIndex(int correctAnswerIndex) {
-    this.correctAnswerIndex = correctAnswerIndex;
+  public void setAnswers(List<Answer> answers) {
+    this.answers = answers;
   }
 
   public MemberEntity getMember() {

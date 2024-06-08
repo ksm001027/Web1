@@ -10,11 +10,24 @@
 <body>
 <h1>기능 선택</h1>
 <div class="menu-container">
-  <a th:href="@{/quizchoice}" class="menu-button">퀴즈</a>
-  <a th:href="@{/HTML/survey.html}" class="menu-button">설문조사</a>
+  <a th:href="@{/quiz/quizChoice}" class="menu-button">퀴즈</a> <!-- 경로 수정 -->
+  <a th:href="@{/survey/surveyChoice}" class="menu-button">설문조사</a> <!-- 경로 수정 -->
   <a th:href="@{/uploadForm}" class="menu-button">파일 배포</a>
-  <a th:href="@{/generate-random-chat}" class="menu-button">실시간 챗</a>
-
+  <button class="menu-button" onclick="createChatRoom()">실시간 챗</button>
 </div>
+
+<script>
+  function createChatRoom() {
+    const uuid = generateUUID();
+    window.location.href = '/chat/' + uuid;
+  }
+
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+</script>
 </body>
 </html>

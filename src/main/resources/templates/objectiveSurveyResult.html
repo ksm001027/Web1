@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>객관식 설문조사 결과</title>
+  <link rel="stylesheet" href="/css/quiz.css">
+  <link rel="stylesheet" type="text/css" href="/css/common.css"/>
+  <link rel="stylesheet" type="text/css" href="/css/surveyResult.css"/>
+</head>
+<body>
+<h1>객관식 설문조사 결과</h1>
+<div>
+  <p><strong>설문조사 제목:</strong> <span id="surveyTitle" th:text="${survey.title}"></span></p>
+  <p><strong>질문:</strong> <span id="surveyQuestion" th:text="${survey.question}"></span></p>
+</div>
+<div>
+  <h2>답변 통계</h2>
+  <canvas id="surveyChart" width="400" height="400"></canvas>
+</div>
+<div id="surveyDataJson" style="display:none;" th:text="${surveyDataJson}"></div>
+<div class="menu-button-container">
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/objectiveSurveyResult.js"></script>
+</body>
+</html>

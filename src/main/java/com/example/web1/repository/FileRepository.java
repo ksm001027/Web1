@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
+  List<FileEntity> findByMember_MemberId(Long memberId);
+
   Optional<FileEntity> findByFilename(String filename);
-  List<FileEntity> findByMember_MemberId(Long memberId); // 특정 회원의 파일 목록 조회
+
+  Optional<FileEntity> findByFilenameAndMember_MemberId(String filename, Long memberId);
+
+  Optional<FileEntity> findByIdAndMember_MemberId(Long id, Long memberId);
 }

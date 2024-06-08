@@ -1,10 +1,11 @@
 package com.example.web1.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "subjective_quiz")
-public class SubjectiveQuiz {
+@Table(name = "subjective_survey")
+public class SubjectiveSurvey {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -15,24 +16,23 @@ public class SubjectiveQuiz {
   @Column(nullable = false)
   private String question;
 
-  @Column(nullable = false)
-  private String answer; // 주관식 퀴즈 정답
+  @OneToMany(mappedBy = "subjectiveSurvey", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Answer> answers;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id", nullable = false)
   private MemberEntity member;
 
-  public SubjectiveQuiz() {
+  public SubjectiveSurvey() {
   }
 
-  public SubjectiveQuiz(String title, String question, String answer, MemberEntity member) {
+  public SubjectiveSurvey(String title, String question, MemberEntity member) {
     this.title = title;
     this.question = question;
-    this.answer = answer;
     this.member = member;
   }
 
-  // Getters and Setters
+  // Getters and setters
   public Long getId() {
     return id;
   }
@@ -57,12 +57,12 @@ public class SubjectiveQuiz {
     this.question = question;
   }
 
-  public String getAnswer() {
-    return answer;
+  public List<Answer> getAnswers() {
+    return answers;
   }
 
-  public void setAnswer(String answer) {
-    this.answer = answer;
+  public void setAnswers(List<Answer> answers) {
+    this.answers = answers;
   }
 
   public MemberEntity getMember() {

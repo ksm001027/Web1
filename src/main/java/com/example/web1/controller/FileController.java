@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -60,8 +60,13 @@ public class FileController {
     }
 
     List<FileEntity> files = fileService.getFilesByMemberId(memberId);
+    String tempSessionId = fileService.createTemporarySession(memberId);
+
     model.addAttribute("files", files);
     model.addAttribute("memberId", memberId);
+    model.addAttribute("serverAddress", serverAddress);
+    model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+    System.out.println("Temporary Session ID: " + tempSessionId + " for memberId: " + memberId); // 로그 추가
     return "download";
   }
 
@@ -122,5 +127,18 @@ public class FileController {
     }
 
     return "redirect:/uploadForm";
+  }
+
+  @GetMapping("/redirect-download")
+  public String redirectToDownload(@RequestParam("tempSessionId") String tempSessionId, HttpSession session, Model model) {
+    Long memberId = fileService.validateTemporarySessionAndGetMemberId(tempSessionId);
+    System.out.println("Redirecting for tempSessionId: " + tempSessionId + " to memberId: " + memberId); // 로그 추가
+    if (memberId != null) {
+      session.setAttribute("memberId", memberId);
+      return "redirect:/downloads";
+    } else {
+      model.addAttribute("message", "유효하지 않은 세션입니다.");
+      return "error"; // 오류 페이지로 리다이렉트
+    }
   }
 }

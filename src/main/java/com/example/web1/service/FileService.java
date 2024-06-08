@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +26,9 @@ public class FileService {
   private final FileRepository fileRepository;
   private final MemberRepository memberRepository;
 
+  private static final ConcurrentHashMap<String, Long> temporarySessions = new ConcurrentHashMap<>();
+
   public void saveFile(MultipartFile file, Long memberId) throws Exception {
-    System.out.println("Saving file for memberId: " + memberId); // 로그 추가
     String filename = file.getOriginalFilename();
     Path path = Paths.get(uploadPath, filename);
 
@@ -42,10 +45,6 @@ public class FileService {
     fileRepository.save(fileEntity);
   }
 
-  public List<FileEntity> getAllFiles() {
-    return fileRepository.findAll();
-  }
-
   public List<FileEntity> getFilesByMemberId(Long memberId) {
     return fileRepository.findByMember_MemberId(memberId);
   }
@@ -57,16 +56,25 @@ public class FileService {
   }
 
   public void deleteFile(Long fileId, Long memberId) throws Exception {
-    FileEntity fileEntity = fileRepository.findById(fileId)
+    FileEntity fileEntity = fileRepository.findByIdAndMember_MemberId(fileId, memberId)
       .orElseThrow(() -> new RuntimeException("파일을 찾을 수 없습니다.: " + fileId));
-
-    if (!fileEntity.getMember().getMemberId().equals(memberId)) {
-      throw new RuntimeException("해당 파일을 삭제할 권한이 없습니다.");
-    }
 
     Path path = Paths.get(fileEntity.getFilepath());
     Files.deleteIfExists(path);
 
     fileRepository.delete(fileEntity);
+  }
+
+  public String createTemporarySession(Long memberId) {
+    String tempSessionId = UUID.randomUUID().toString();
+    temporarySessions.put(tempSessionId, memberId);
+    System.out.println("Created temporary session: " + tempSessionId + " for memberId: " + memberId); // 로그 추가
+    return tempSessionId;
+  }
+
+  public Long validateTemporarySessionAndGetMemberId(String tempSessionId) {
+    Long memberId = temporarySessions.get(tempSessionId);
+    System.out.println("Validated tempSessionId: " + tempSessionId + " with memberId: " + memberId); // 로그 추가
+    return memberId;
   }
 }
