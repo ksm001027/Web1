@@ -137,73 +137,22 @@ public class SurveyController {
     }
   }
 
-  @GetMapping("/subjectiveSurvey/{id}")
-  public String getSubjectiveSurvey(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
-    Long memberId = (Long) session.getAttribute("memberId");
-
-    if (memberId == null && tempSessionId != null) {
-      memberId = surveyService.validateTemporarySessionAndGetMemberId(tempSessionId);
-      if (memberId != null) {
-        session.setAttribute("memberId", memberId);
-      }
-    }
-
-    if (memberId == null) {
-      model.addAttribute("message", "로그인이 필요합니다.");
-      return "redirect:/member/login";
-    }
-
-    Optional<SubjectiveSurvey> survey = surveyService.getSubjectiveSurveyById(id);
-    if (survey.isPresent()) {
-      model.addAttribute("survey", survey.get());
-      model.addAttribute("serverAddress", serverAddress);
-      model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
-      return "subjectiveSurveyAnswer";
-    } else {
-      return "surveyNotFound";
-    }
-  }
-
-  @GetMapping("/objectiveSurveyAnswer/{id}")
-  public String getObjectiveSurveyAnswer(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
-    Long memberId = (Long) session.getAttribute("memberId");
-
-    if (memberId == null && tempSessionId != null) {
-      memberId = surveyService.validateTemporarySessionAndGetMemberId(tempSessionId);
-      if (memberId != null) {
-        session.setAttribute("memberId", memberId);
-      }
-    }
-
-    if (memberId == null) {
-      model.addAttribute("message", "로그인이 필요합니다.");
-      return "redirect:/member/login";
-    }
-
-    Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
-    if (survey.isPresent()) {
-      model.addAttribute("survey", survey.get());
-      model.addAttribute("serverAddress", serverAddress);
-      model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
-
-      // QR 코드 URL을 생성
-      String qrCodeUrl = generateQRCodeUrl(memberId, "objectiveSurveyAnswer", id);
-      model.addAttribute("qrCodeUrl", qrCodeUrl);
-
-      return "objectiveSurveyAnswer";
-    } else {
-      return "surveyNotFound";
-    }
-  }
-
   @GetMapping("/subjectiveSurveyAnswer/{id}")
-  public String getSubjectiveSurveyAnswer(@PathVariable Long id, @RequestParam(value = "tempSessionId", required = false) String tempSessionId, HttpSession session, Model model) {
+  public String getSubjectiveSurveyAnswer(
+    @PathVariable Long id,
+    @RequestParam(value = "tempSessionId", required = false) String tempSessionId,
+    HttpSession session,
+    Model model) {
+
     Long memberId = (Long) session.getAttribute("memberId");
 
     if (memberId == null && tempSessionId != null) {
       memberId = surveyService.validateTemporarySessionAndGetMemberId(tempSessionId);
       if (memberId != null) {
         session.setAttribute("memberId", memberId);
+        System.out.println("Access granted via temp session: " + tempSessionId);
+      } else {
+        System.out.println("Invalid temp session: " + tempSessionId);
       }
     }
 
@@ -223,6 +172,46 @@ public class SurveyController {
       model.addAttribute("qrCodeUrl", qrCodeUrl);
 
       return "subjectiveSurveyAnswer";
+    } else {
+      return "surveyNotFound";
+    }
+  }
+
+  @GetMapping("/objectiveSurveyAnswer/{id}")
+  public String getObjectiveSurveyAnswer(
+    @PathVariable Long id,
+    @RequestParam(value = "tempSessionId", required = false) String tempSessionId,
+    HttpSession session,
+    Model model) {
+
+    Long memberId = (Long) session.getAttribute("memberId");
+
+    if (memberId == null && tempSessionId != null) {
+      memberId = surveyService.validateTemporarySessionAndGetMemberId(tempSessionId);
+      if (memberId != null) {
+        session.setAttribute("memberId", memberId);
+        System.out.println("Access granted via temp session: " + tempSessionId);
+      } else {
+        System.out.println("Invalid temp session: " + tempSessionId);
+      }
+    }
+
+    if (memberId == null) {
+      model.addAttribute("message", "로그인이 필요합니다.");
+      return "redirect:/member/login";
+    }
+
+    Optional<ObjectiveSurvey> survey = surveyService.getObjectiveSurveyById(id);
+    if (survey.isPresent()) {
+      model.addAttribute("survey", survey.get());
+      model.addAttribute("serverAddress", serverAddress);
+      model.addAttribute("tempSessionId", tempSessionId); // tempSessionId를 모델에 추가
+
+      // QR 코드 URL을 생성
+      String qrCodeUrl = generateQRCodeUrl(memberId, "objectiveSurveyAnswer", id);
+      model.addAttribute("qrCodeUrl", qrCodeUrl);
+
+      return "objectiveSurveyAnswer";
     } else {
       return "surveyNotFound";
     }
@@ -330,15 +319,7 @@ public class SurveyController {
   // QR 코드 URL 생성 메서드
   private String generateQRCodeUrl(Long memberId, String purpose, Long id) {
     String tempSessionId = surveyService.createTemporarySession(memberId);
-    switch (purpose) {
-      case "fileDownload":
-        return serverAddress + "/redirect-download?tempSessionId=" + tempSessionId;
-      case "objectiveSurveyAnswer":
-        return serverAddress + "/survey/objectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
-      case "subjectiveSurveyAnswer":
-        return serverAddress + "/survey/subjectiveSurveyAnswer/" + id + "?tempSessionId=" + tempSessionId;
-      default:
-        throw new IllegalArgumentException("Unknown purpose: " + purpose);
-    }
+    System.out.println("Temp session ID included in URL: " + tempSessionId);
+    return serverAddress + "/survey/" + purpose + "/" + id + "?tempSessionId=" + tempSessionId;
   }
 }

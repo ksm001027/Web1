@@ -24,7 +24,8 @@
 <p th:if="${result}" th:text="${result}"></p>
 <div>
   <h2>주관식 퀴즈 QR 코드</h2>
-  <img th:src="@{'/generate-qr?memberId=' + ${quiz.member.memberId} + '&purpose=subjectiveQuiz&id=' + ${quiz.id}}" alt="QR Code">
+  <!-- QR 코드 이미지를 동적으로 생성된 URL로 표시 -->
+  <img th:src="'/generate-qr?memberId=' + ${quiz.member.memberId} + '&purpose=subjectiveQuiz&id=' + ${quiz.id}" alt="QR Code">
 </div>
 <!-- QR 코드 아래에 URL을 표시 -->
 <p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" style="margin-top: 10px;"></p>

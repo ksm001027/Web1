@@ -4,41 +4,7 @@
   <title>파일 다운로드</title>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<<<<<<< HEAD
-  <link rel="stylesheet" type="text/css" th:href="@{/css/file.css}"/> <!-- CSS 참조 -->
-  <script>
-    function uploadFile() {
-      const formData = new FormData(document.getElementById('uploadForm'));
-      fetch('/upload', {
-        method: 'POST',
-        body: formData,
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            const link = document.createElement('a');
-            link.href = data.filePath;
-            link.textContent = '다운로드: ' + data.fileName;
-            link.download = data.fileName;
-            document.getElementById('downloadLinkContainer').appendChild(link);
-          } else {
-            alert('파일 업로드 실패');
-          }
-        })
-        .catch(error => console.error('Error uploading file:', error));
-    }
-
-    function generateQRCode() {
-      const currentURL = window.location.href;
-      const qrImage = document.getElementById('qrImage');
-      qrImage.src = '/generate-qr?url=' + encodeURIComponent(currentURL);
-    }
-
-    window.onload = generateQRCode;
-  </script>
-=======
   <link rel="stylesheet" type="text/css" th:href="@{/css/download.css}"/>
->>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
 </head>
 <body>
 <div class="download-container">
@@ -48,25 +14,9 @@
       <a th:href="@{'/download?filename=' + ${file.filename}}" th:text="${file.filename}">Download Link</a>
     </li>
   </ul>
-<<<<<<< HEAD
-
-  <!-- 파일 업로드 폼 -->
-  <form id="uploadForm" enctype="multipart/form-data">
-    <input type="file" name="file" />
-    <button type="button" onclick="uploadFile()">업로드</button>
-  </form>
-  <div id="downloadLinkContainer"></div>
-
-  <!-- 실시간으로 생성된 QR 코드 이미지를 보여주는 부분 -->
-=======
->>>>>>> 14a438b65c4bd60893d34cea364262edd939db7d
   <div>
-<<<<<<< HEAD
-    <img id="qrImage" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
-=======
     <img th:src="@{'/generate-qr?memberId=' + ${memberId} + '&purpose=fileDownload&id=' + ${memberId}}" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
     <p th:text="'QR 코드 URL: ' + ${serverAddress} + '/redirect-download?tempSessionId=' + ${tempSessionId}" style="margin-top: 10px;"></p> <!-- QR 코드 아래에 URL을 표시 -->
->>>>>>> bc916415288a5954341542681787419a7347a988
   </div>
 </div>
 </body>
