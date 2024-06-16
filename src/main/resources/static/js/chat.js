@@ -58,11 +58,12 @@ function toggleQRCode() {
   const qrContainer = document.getElementById('qrcode-container');
   if (qrContainer.style.display === 'none' || qrContainer.style.display === '') {
     const url = window.location.href;
-    fetch(`/generate-qr?url=${encodeURIComponent(url)}`)
+    fetch(`/generate-qr?url=${encodeURIComponent(url)}&purpose=chat`)
       .then(response => response.blob())
       .then(blob => {
-        const url = URL.createObjectURL(blob);
-        document.getElementById('qrcode').src = url;
+        const imageUrl = URL.createObjectURL(blob);
+        document.getElementById('qrcode').src = imageUrl;
+        document.getElementById('qr-url').innerText = url; // QR 코드 URL을 표시
         qrContainer.style.display = 'block';
       });
   } else {

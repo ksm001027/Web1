@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model; // 추가
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,10 +35,24 @@ public class QRCodeController {
 
   @GetMapping("/generate-qr")
   public ResponseEntity<byte[]> generateQRCode(
-    @RequestParam("memberId") Long memberId,
+    @RequestParam(value = "memberId", required = false) Long memberId,
     @RequestParam("purpose") String purpose,
-    @RequestParam("id") Long id) {
+    @RequestParam(value = "id", required = false) Long id, // Chat에는 id가 필요 없으므로 optional로 설정
+    @RequestParam(value = "url", required = false) String url) { // 채팅 URL
     try {
+      // 채팅용 QR 코드 생성
+      if ("chat".equals(purpose)) {
+        if (url == null) {
+          return ResponseEntity.badRequest().body(null); // URL이 없으면 잘못된 요청
+        }
+        return generateQRCodeFromUrl(url);
+      }
+
+      // 기타 용도 (퀴즈, 설문조사, 파일 다운로드)용 QR 코드 생성
+      if (memberId == null) {
+        return ResponseEntity.badRequest().body(null); // memberId가 없으면 잘못된 요청
+      }
+
       String tempSessionId;
       switch (purpose) {
         case "fileDownload":
@@ -56,8 +70,32 @@ public class QRCodeController {
           throw new IllegalArgumentException("Unknown purpose: " + purpose);
       }
 
-      String url = generateUrlWithSession(purpose, id, tempSessionId);
+      String finalUrl = generateUrlWithSession(purpose, id, tempSessionId);
+      return generateQRCodeFromUrl(finalUrl);
 
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+  }
+
+  private String generateUrlWithSession(String purpose, Long id, String tempSessionId) {
+    switch (purpose) {
+      case "fileDownload":
+        return serverAddress + "/redirect-download?tempSessionId=" + tempSessionId;
+      case "objectiveSurveyAnswer":
+      case "subjectiveSurveyAnswer":
+        return serverAddress + "/survey/" + purpose + "/" + id + "?tempSessionId=" + tempSessionId;
+      case "objectiveQuiz":
+      case "subjectiveQuiz":
+        return serverAddress + "/quiz/" + purpose + "/" + id + "?tempSessionId=" + tempSessionId;
+      default:
+        throw new IllegalArgumentException("Unknown purpose: " + purpose);
+    }
+  }
+
+  private ResponseEntity<byte[]> generateQRCodeFromUrl(String url) {
+    try {
       int width = 350;
       int height = 350;
 
@@ -69,9 +107,6 @@ public class QRCodeController {
       MatrixToImageWriter.writeToStream(bitMatrix, "PNG", baos);
       byte[] qrImageBytes = baos.toByteArray();
 
-      // 로그 추가
-      System.out.println("Generated QR Code URL: " + url);
-
       return ResponseEntity.ok()
         .contentType(org.springframework.http.MediaType.IMAGE_PNG)
         .header("QRCodeURL", url)
@@ -81,25 +116,5 @@ public class QRCodeController {
       e.printStackTrace();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
-  }
-
-  private String generateUrlWithSession(String purpose, Long id, String tempSessionId) {
-    String url;
-    switch (purpose) {
-      case "fileDownload":
-        url = serverAddress + "/redirect-download?tempSessionId=" + tempSessionId;
-        break;
-      case "objectiveSurveyAnswer":
-      case "subjectiveSurveyAnswer":
-        url = serverAddress + "/survey/" + purpose + "/" + id + "?tempSessionId=" + tempSessionId;
-        break;
-      case "objectiveQuiz":
-      case "subjectiveQuiz":
-        url = serverAddress + "/quiz/" + purpose + "/" + id + "?tempSessionId=" + tempSessionId;
-        break;
-      default:
-        throw new IllegalArgumentException("Unknown purpose: " + purpose);
-    }
-    return url;
   }
 }

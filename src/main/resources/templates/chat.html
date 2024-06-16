@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="chat-room">
-  <h1 id="chat-room-title"></h1>
+  <h1 id="chat-room-title">Chat Room</h1>
   <div id="messages" class="messages"></div>
   <input type="text" id="usernameInput" placeholder="이름을 입력하시오">
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
@@ -20,13 +20,14 @@
     <button id="showQRButton" onclick="toggleQRCode()">QR코드</button>
   </div>
   <!-- QR 코드를 표시할 요소 -->
-  <div id="qrcode-container" class="qrcode-container" style="display: none;">
+  <div id="qrcode-container" class="qrcode-container">
     <img id="qrcode" alt="QR Code">
     <button id="hideQRButton" class="close-button" onclick="toggleQRCode()">X</button>
+    <!-- QR 코드 아래에 URL 표시 -->
+    <p id="qr-url"></p>
   </div>
 </div>
 <script>
-
   // chat.js를 로드
   const script = document.createElement('script');
   script.src = '/js/chat.js';
