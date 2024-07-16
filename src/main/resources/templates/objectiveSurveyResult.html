@@ -22,6 +22,104 @@
 <div class="menu-button-container">
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="/js/objectiveSurveyResult.js"></script>
+<script>
+  // 현재 페이지의 URL에서 설문조사 ID를 추출하는 함수
+  function getSurveyIdFromUrl() {
+    const pathParts = window.location.pathname.split('/');
+    return pathParts[pathParts.length - 1]; // URL의 마지막 부분을 ID로 간주
+  }
+
+  // 설문조사 데이터를 서버에서 가져와 페이지와 차트를 업데이트하는 함수
+  function fetchSurveyData() {
+    const surveyId = getSurveyIdFromUrl(); // URL에서 설문조사 ID를 추출
+    const apiUrl = `/api/survey/objective/${surveyId}`; // 추출한 ID를 사용하여 API URL 생성
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Data fetched:', data); // 데이터를 로깅하여 확인
+        console.log('Survey Options:', data.options); // options 값을 로깅
+
+        if (data.error) {
+          console.error('Error in response:', data.error);
+          return;
+        }
+
+        // 설문조사 제목과 질문 업데이트
+        document.getElementById('surveyTitle').innerText = data.title;
+        document.getElementById('surveyQuestion').innerText = data.question;
+
+        // 차트 업데이트를 위해 차트 인스턴스를 다시 가져오기
+        const ctx = document.getElementById('surveyChart').getContext('2d');
+        let surveyChart = Chart.getChart(ctx);
+
+        if (!surveyChart) {
+          surveyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.options, // options 배열 사용
+              datasets: [{
+                label: '응답 수',
+                data: [
+                  data.answerCounts['1'] || 0,
+                  data.answerCounts['2'] || 0,
+                  data.answerCounts['3'] || 0,
+                  data.answerCounts['4'] || 0
+                ],
+                backgroundColor: [
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        } else {
+          // 차트 데이터 업데이트
+          const updatedData = [
+            data.answerCounts['1'] || 0,
+            data.answerCounts['2'] || 0,
+            data.answerCounts['3'] || 0,
+            data.answerCounts['4'] || 0
+          ];
+
+          // 데이터 로깅 추가
+          console.log('Updated Data for Chart:', updatedData);
+          console.log('Chart Labels:', data.options);
+
+          // 차트 데이터 갱신
+          surveyChart.data.labels = data.options; // options 배열 사용
+          surveyChart.data.datasets[0].data = updatedData;
+
+          // 차트 업데이트
+          surveyChart.update();
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching survey data:', error);
+      });
+  }
+
+  // 주기적으로 데이터를 가져오기 위해 5초마다 fetchSurveyData 함수 호출
+  setInterval(fetchSurveyData, 5000);
+
+  // 페이지 로드 시 첫 데이터 가져오기
+  window.onload = fetchSurveyData;
+</script>
 </body>
 </html>

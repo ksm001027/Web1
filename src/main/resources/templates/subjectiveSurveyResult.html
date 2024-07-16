@@ -10,18 +10,69 @@
 <body>
 <h1>주관식 설문조사 결과</h1>
 <div>
-  <p><strong>설문조사 제목:</strong> <span th:text="${survey.title}"></span></p>
-  <p><strong>질문:</strong> <span th:text="${survey.question}"></span></p>
+  <p><strong>설문조사 제목:</strong> <span id="surveyTitle" th:text="${survey.title}"></span></p>
+  <p><strong>질문:</strong> <span id="surveyQuestion" th:text="${survey.question}"></span></p>
 </div>
 <div>
   <h2>답변 목록</h2>
-  <ul>
+  <ul id="answerList">
+    <!-- 초기 HTML 렌더링 시 서버에서 제공하는 답변 목록 -->
     <li th:each="answer : ${answers}">
       <p th:text="${answer.answer}"></p>
     </li>
   </ul>
 </div>
-<div class="menu-button-container">
-</div>
+<div class="menu-button-container"></div>
+
+<!-- AJAX와 JavaScript를 위한 스크립트 추가 -->
+<script>
+  // 현재 페이지의 URL에서 설문조사 ID를 추출하는 함수
+  function getSurveyIdFromUrl() {
+    const pathParts = window.location.pathname.split('/');
+    return pathParts[pathParts.length - 1]; // URL의 마지막 부분을 ID로 간주
+  }
+
+  // 설문조사 데이터를 서버에서 가져와 페이지에 업데이트하는 함수
+  function fetchSurveyData() {
+    const surveyId = getSurveyIdFromUrl(); // URL에서 설문조사 ID를 추출
+    const apiUrl = `/api/survey/subjective/${surveyId}`; // 추출한 ID를 사용하여 API URL 생성
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Data fetched:', data);
+
+        if (data.error) {
+          console.error('Error in response:', data.error);
+          return;
+        }
+
+        // 설문조사 제목과 질문 업데이트
+        document.getElementById('surveyTitle').innerText = data.title;
+        document.getElementById('surveyQuestion').innerText = data.question;
+
+        // 답변 목록 업데이트
+        const answerList = document.getElementById('answerList');
+        answerList.innerHTML = ''; // 기존 리스트 초기화
+        data.answers.forEach(answer => {
+          const li = document.createElement('li');
+          const p = document.createElement('p');
+          p.innerText = answer;  // JSON 구조에 맞게 answer.answer로 수정
+          li.appendChild(p);
+          answerList.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching survey data:', error);
+      });
+  }
+
+  // 주기적으로 데이터를 가져오기 위해 5초마다 fetchSurveyData 함수 호출
+  setInterval(fetchSurveyData, 5000);
+
+  // 페이지 로드 시 즉시 데이터를 가져와서 첫 번째로 업데이트
+  window.onload = fetchSurveyData;
+</script>
+
 </body>
 </html>
