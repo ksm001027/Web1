@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>기능 선택</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/mainclass.css}"/> <!-- CSS 참조 -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/mainclass.css}"/>
 </head>
 <body>
 <h1>기능 선택</h1>
 <div class="menu-container">
-  <a th:href="@{/quiz/quizChoice}" class="menu-button">퀴즈</a> <!-- 경로 수정 -->
-  <a th:href="@{/survey/surveyChoice}" class="menu-button">설문조사</a> <!-- 경로 수정 -->
-  <a th:href="@{/uploadForm}" class="menu-button">파일 배포</a>
-  <button class="menu-button" onclick="createChatRoom()">실시간 챗</button>
+  <a href="/quiz/quizChoice" class="menu-button">
+    퀴즈 <img src="/images/quiz-icon.png" alt="퀴즈 아이콘" class="menu-icon" width="20" height="20">
+  </a>
+  <a href="/survey/surveyChoice" class="menu-button">
+    설문조사 <img src="/images/survey-icon.png" alt="설문조사 아이콘" class="menu-icon" width="20" height="20">
+  </a>
+  <a href="/uploadForm" class="menu-button">
+    파일 배포 <img src="/images/file-icon.png" alt="파일 배포 아이콘" class="menu-icon" width="20" height="20">
+  </a>
+  <a href="#" class="menu-button" onclick="createChatRoom()">
+    실시간 챗 <img src="/images/chat-icon.png" alt="실시간 챗 아이콘" class="menu-icon" width="20" height="20">
+  </a>
 </div>
 
 <script>

@@ -1,13 +1,28 @@
+:root {
+  /* 색상 정의 */
+  --background-color: #ffffff;  /* 흰색 배경 */
+  --button-color: #ff8c00;      /* 주황색 버튼 */
+  --button-hover-color: #ff6600; /* 짙은 주황색 */
+  --text-color: #ff8c00;        /* 주황색 텍스트 */
+  --container-background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 */
+  --container-shadow-color: rgba(255, 140, 0, 0.4); /* 그림자 주황색 */
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f9;
+  background-color: var(--background-color);
+  background-image: url('../images/pencil-icon.png'); /* 배경 이미지 경로 */
+  background-size: 35%; /* 배경 이미지 크기 설정 */
+  background-repeat: no-repeat; /* 배경 이미지 반복 없음 */
+  background-position: center; /* 배경 이미지 가운데 정렬 */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   text-align: center;
+  color: var(--text-color);
 }
 
 h1 {
@@ -19,6 +34,10 @@ h1 {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  background: var(--container-background-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px var(--container-shadow-color);
 }
 
 input[type="file"] {
@@ -26,7 +45,7 @@ input[type="file"] {
 }
 
 button {
-  background-color: #5c67f2;
+  background-color: var(--button-color);
   color: white;
   padding: 10px 20px;
   border: none;
@@ -35,7 +54,7 @@ button {
 }
 
 button:hover {
-  background-color: #5058e2;
+  background-color: var(--button-hover-color);
 }
 
 .button-container {
@@ -45,7 +64,7 @@ button:hover {
 }
 
 .button {
-  background-color: #5c67f2;
+  background-color: var(--button-color);
   color: white;
   padding: 10px 20px;
   border: none;
@@ -56,7 +75,7 @@ button:hover {
 }
 
 .button:hover {
-  background-color: #5058e2;
+  background-color: var(--button-hover-color);
 }
 
 ul {
@@ -69,7 +88,7 @@ li {
 }
 
 li form button {
-  background-color: #dc3545;
+  background-color: #28a745;
   padding: 5px 10px;
   font-size: 12px;
   margin-left: 10px;

@@ -8,10 +8,19 @@
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
+  <style>
+    /* 아이콘 스타일 추가 */
+    .chat-icon {
+      width: 24px; /* 아이콘 너비 설정 */
+      height: 24px; /* 아이콘 높이 설정 */
+    }
+  </style>
 </head>
 <body>
-<div id="chat-room">
-  <h1 id="chat-room-title">채팅방</h1>
+<div id="chat-room" class="container">
+  <h1 id="chat-room-title">채팅방
+    <img src="/images/chat-icon.png" alt="채팅방 아이콘" class="chat-icon">
+  </h1>
   <div id="messages" class="messages"></div>
   <input type="text" id="usernameInput" placeholder="이름을 입력하시오">
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">

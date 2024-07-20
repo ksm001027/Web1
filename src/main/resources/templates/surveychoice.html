@@ -6,35 +6,48 @@
   <title>설문조사 선택</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/surveyChoice.css}"/>
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <script>
+    function toggleSurveyList() {
+      const surveyListContainer = document.getElementById('survey-list-container');
+      if (surveyListContainer.style.display === 'none' || surveyListContainer.style.display === '') {
+        surveyListContainer.style.display = 'block';
+      } else {
+        surveyListContainer.style.display = 'none';
+      }
+    }
+  </script>
 </head>
 <body>
-<h1>설문조사 선택</h1>
-<div class="survey-choice-container">
-  <a th:href="@{/subjectiveSurvey}" class="choice-button">주관식 설문조사 등록</a>
-  <a th:href="@{/objectiveSurvey}" class="choice-button">객관식 설문조사 등록</a>
-</div>
-<div class="survey-list-container">
-  <h2>등록된 주관식 설문조사</h2>
-  <ul>
-    <li th:each="survey : ${subjectiveSurveys}">
-      <a th:href="@{'/survey/subjectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
-      <form th:action="@{'/survey/deleteSubjectiveSurvey/' + ${survey.id}}" method="post" style="display:inline;">
-        <button type="submit" class="delete-button">삭제</button>
-      </form>
-    </li>
-  </ul>
-  <h2>등록된 객관식 설문조사</h2>
-  <ul>
-    <li th:each="survey : ${objectiveSurveys}">
-      <a th:href="@{'/survey/objectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
-      <form th:action="@{'/survey/deleteObjectiveSurvey/' + ${survey.id}}" method="post" style="display:inline;">
-        <button type="submit" class="delete-button">삭제</button>
-      </form>
-    </li>
-  </ul>
-</div>
-<div class="menu-button-container">
-  <a th:href="@{/web-menu}" class="menu-button">메뉴로 이동</a>
+<div class="container">
+  <h1>설문조사 선택<img src="/images/survey-icon.png" alt="설문조사 아이콘" class="menu-icon" width="24" height="24"></h1>
+  <div class="survey-choice-container">
+    <a th:href="@{/subjectiveSurvey}" class="choice-button">주관식 설문조사 등록</a>
+    <a th:href="@{/objectiveSurvey}" class="choice-button">객관식 설문조사 등록</a>
+    <button class="view-list-button" onclick="toggleSurveyList()">등록된 설문조사 보기</button>
+  </div>
+  <div id="survey-list-container" class="survey-list-container" style="display: none;">
+    <h2>등록된 주관식 설문조사</h2>
+    <ul>
+      <li th:each="survey : ${subjectiveSurveys}">
+        <a th:href="@{'/survey/subjectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
+        <form th:action="@{'/survey/deleteSubjectiveSurvey/' + ${survey.id}}" method="post" style="display:inline;">
+          <button type="submit" class="delete-button">삭제</button>
+        </form>
+      </li>
+    </ul>
+    <h2>등록된 객관식 설문조사</h2>
+    <ul>
+      <li th:each="survey : ${objectiveSurveys}">
+        <a th:href="@{'/survey/objectiveSurveyAnswer/' + ${survey.id}}" th:text="${survey.title}">설문조사 제목</a>
+        <form th:action="@{'/survey/deleteObjectiveSurvey/' + ${survey.id}}" method="post" style="display:inline;">
+          <button type="submit" class="delete-button">삭제</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+  <div class="menu-button-container">
+    <a th:href="@{/web-menu}" class="menu-button">메뉴로 이동</a>
+  </div>
 </div>
 </body>
 </html>

@@ -40,74 +40,41 @@ h1, h2 {
   color: var(--text-color);
 }
 
-.survey-choice-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+.form-group {
+  margin: 20px 0;
+  text-align: left;
 }
 
-.choice-button, .view-list-button {
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"], select {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button, .menu-button {
   background-color: var(--button-color);
   color: white;
-  border: none;
   padding: 10px 20px;
-  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
   text-decoration: none;
-  display: inline-block;
   font-size: 16px;
-  font-weight: bold; /* 폰트 굵기 통일 */
   margin: 10px;
   transition: background-color 0.3s;
-  cursor: pointer;
-  border-radius: 5px;
 }
 
-.choice-button:hover, .view-list-button:hover {
+button:hover, .menu-button:hover {
   background-color: var(--button-hover-color);
-}
-
-.survey-list-container {
-  margin-top: 30px;
-  text-align: center;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.view-button, .delete-button {
-  background-color: var(--button-color);
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  margin-left: 10px;
-  transition: background-color 0.3s;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.view-button:hover, .delete-button:hover {
-  background-color: var(--button-hover-color);
-}
-
-.delete-button {
-  background-color: #28a745;
-}
-
-.delete-button:hover {
-  background-color: #c82333;
 }
 
 .menu-button-container {
@@ -116,7 +83,12 @@ li {
   margin-top: 20px;
 }
 
-.menu-button {
+.qr-code-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.qr-code-button {
   background-color: var(--highlight-color);
   color: white;
   border: none;
@@ -125,13 +97,17 @@ li {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  font-weight: bold; /* 폰트 굵기 통일 */
   margin: 10px;
   transition: background-color 0.3s;
   cursor: pointer;
   border-radius: 5px;
 }
 
-.menu-button:hover {
+.qr-code-button:hover {
   background-color: var(--highlight-hover-color);
+}
+
+.qr-code {
+  margin-top: 10px;
+  display: none;
 }

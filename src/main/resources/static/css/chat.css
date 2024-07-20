@@ -1,6 +1,17 @@
+:root {
+  --background-color: #ffffff;  /* 흰색 배경 */
+  --primary-color: #ff8c00;      /* 주황색 기본 색상 */
+  --primary-hover-color: #ff6600; /* 짙은 주황색 호버 색상 */
+  --container-shadow-color: rgba(255, 140, 0, 0.4); /* 그림자 주황색 */
+}
+
 body {
   font-family: 'Arial', sans-serif;
   background-color: #f0f2f5;
+  background-image: url('../images/pencil-icon.png'); /* 배경 이미지 경로 */
+  background-size: 35%; /* 배경 이미지 크기 설정 */
+  background-repeat: no-repeat; /* 배경 이미지 반복 없음 */
+  background-position: center; /* 배경 이미지 가운데 정렬 */
   margin: 0;
   height: 100vh;
   display: flex;
@@ -12,9 +23,9 @@ body {
   width: 90%;
   max-width: 400px;
   height: 500px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--container-shadow-color);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -40,7 +51,7 @@ body {
 }
 
 .my-message {
-  background-color: #34B7F1;
+  background-color: var(--primary-color);
   align-self: flex-end; /* 오른쪽 정렬 */
 }
 
@@ -76,7 +87,7 @@ body {
 }
 
 button {
-  background-color: #0078D7;
+  background-color: var(--primary-color);
   color: white;
   cursor: pointer;
   border-radius: 30px;
@@ -89,7 +100,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-hover-color);
 }
 
 .qrcode-container {
@@ -97,10 +108,10 @@ button:hover {
   right: 20px;
   bottom: 20px;
   display: none; /* 초기에는 QR 코드를 숨김 */
-  background-color: #fff;
-  border: 2px solid #fff;
+  background-color: var(--background-color);
+  border: 2px solid var(--background-color);
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--container-shadow-color);
   padding: 10px;
 }
 

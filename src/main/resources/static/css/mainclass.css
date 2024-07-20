@@ -1,42 +1,102 @@
 :root {
   /* 색상 정의 */
-  --background-color: #f4f4f9;
-  --button-color: #5c67f2;
-  --button-hover-color: #5058e2;
-  --text-color: #333;
+  --background-color: #ffffff;  /* 흰색 배경 */
+  --button-color: #ff8c00;      /* 주황색 버튼 */
+  --button-hover-color: #ff6600; /* 짙은 주황색 */
+  --text-color: #ff8c00;        /* 주황색 텍스트 */
+  --container-background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 */
+  --container-shadow-color: rgba(255, 140, 0, 0.4); /* 그림자 주황색 */
 }
 
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
   background-color: var(--background-color);
+  background-image: url('../images/pencil-icon.png'); /* 배경 이미지 경로 */
+  background-size: 35%; /* 배경 이미지 크기 설정 */
+  background-repeat: no-repeat; /* 배경 이미지 반복 없음 */
+  background-position: center; /* 배경 이미지 가운데 정렬 */
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
 }
 
 h1 {
   color: var(--text-color);
-  text-align: center;
+  font-size: 2.5em;
+  margin: 0; /* 상단과 하단의 기본 마진 제거 */
+  text-shadow: 2px 2px 4px var(--container-shadow-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 img {
+  margin-left: 15px;
+  width: 50px;
+  height: 50px;
 }
 
 .menu-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  background: var(--container-background-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px var(--container-shadow-color);
+  margin-top: 0; /* 컨테이너 상단 마진 제거 */
 }
 
 .menu-button {
   background-color: var(--button-color);
   color: white;
-  padding: 15px 30px;
+  padding: 10px 20px; /* 패딩을 줄임 */
   text-decoration: none;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-size: 18px;
-  width: 200px;
-  text-align: center;
-  transition: background-color 0.3s;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 버튼 안의 내용 중앙 정렬 */
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 12px var(--container-shadow-color);
 }
 
 .menu-button:hover {
   background-color: var(--button-hover-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--container-shadow-color);
+}
+
+.menu-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px var(--container-shadow-color);
+}
+
+/* 모바일 환경을 위한 미디어 쿼리 */
+@media (max-width: 600px) {
+  body {
+    background-size: cover; /* 모바일 환경에서 배경 이미지 크기 조절 */
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .menu-button {
+    font-size: 1em;
+    width: 200px;
+    padding: 8px 16px; /* 모바일 환경에서 패딩 조정 */
+  }
+
+  .menu-button img.menu-icon {
+    width: 14px; /* 모바일 환경에서 아이콘 크기 조정 */
+    height: 14px; /* 모바일 환경에서 아이콘 크기 조정 */
+  }
 }

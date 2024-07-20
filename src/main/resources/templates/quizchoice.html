@@ -6,37 +6,50 @@
   <title>퀴즈 유형 선택</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/quizchoice.css}"/>
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <script>
+    function toggleQuizList() {
+      const quizListContainer = document.getElementById('quiz-list-container');
+      if (quizListContainer.style.display === 'none' || quizListContainer.style.display === '') {
+        quizListContainer.style.display = 'block';
+      } else {
+        quizListContainer.style.display = 'none';
+      }
+    }
+  </script>
 </head>
 <body>
-<h1>퀴즈 유형 선택</h1>
-<div class="quiz-choice-container">
-  <a th:href="@{/subjective}" class="choice-button">주관식 퀴즈 등록</a>
-  <a th:href="@{/objective}" class="choice-button">객관식 퀴즈 등록</a>
-</div>
-<div class="quiz-list-container">
-  <h2>등록된 주관식 퀴즈</h2>
-  <ul>
-    <li th:each="quiz : ${subjectiveQuizzes}">
-      <a th:href="@{'/quiz/subjectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
-      <form th:action="@{/quiz/delete}" method="post" style="display:inline;">
-        <input type="hidden" name="quizId" th:value="${quiz.id}">
-        <button type="submit" class="delete-button">삭제</button>
-      </form>
-    </li>
-  </ul>
-  <h2>등록된 객관식 퀴즈</h2>
-  <ul>
-    <li th:each="quiz : ${objectiveQuizzes}">
-      <a th:href="@{'/quiz/objectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
-      <form th:action="@{/quiz/delete}" method="post" style="display:inline;">
-        <input type="hidden" name="quizId" th:value="${quiz.id}">
-        <button type="submit" class="delete-button">삭제</button>
-      </form>
-    </li>
-  </ul>
-</div>
-<div class="menu-button-container">
-  <a th:href="@{/web-menu}" class="menu-button">메뉴로 이동</a>
+<div class="container">
+  <h1>퀴즈 유형 선택<img src="/images/quiz-icon.png" alt="퀴즈 아이콘" class="menu-icon" width="24" height="24"></h1>
+  <div class="quiz-choice-container">
+    <a th:href="@{/subjective}" class="choice-button">주관식 퀴즈 등록</a>
+    <a th:href="@{/objective}" class="choice-button">객관식 퀴즈 등록</a>
+    <button class="view-list-button" onclick="toggleQuizList()">등록된 퀴즈 보기</button>
+  </div>
+  <div id="quiz-list-container" class="quiz-list-container" style="display: none;">
+    <h2>등록된 주관식 퀴즈</h2>
+    <ul>
+      <li th:each="quiz : ${subjectiveQuizzes}">
+        <a th:href="@{'/quiz/subjectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
+        <form th:action="@{/quiz/delete}" method="post" style="display:inline;">
+          <input type="hidden" name="quizId" th:value="${quiz.id}">
+          <button type="submit" class="delete-button">삭제</button>
+        </form>
+      </li>
+    </ul>
+    <h2>등록된 객관식 퀴즈</h2>
+    <ul>
+      <li th:each="quiz : ${objectiveQuizzes}">
+        <a th:href="@{'/quiz/objectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
+        <form th:action="@{/quiz/delete}" method="post" style="display:inline;">
+          <input type="hidden" name="quizId" th:value="${quiz.id}">
+          <button type="submit" class="delete-button">삭제</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+  <div class="menu-button-container">
+    <a th:href="@{/web-menu}" class="menu-button">메뉴로 이동</a>
+  </div>
 </div>
 </body>
 </html>

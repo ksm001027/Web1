@@ -4,32 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>주관식 설문조사 답변</title>
-  <link rel="stylesheet" href="/css/quiz.css">
-  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <link rel="stylesheet" href="/css/answer.css">
 </head>
 <body>
-<h1>주관식 설문조사 답변</h1>
-<div>
-  <p><strong>설문조사 제목:</strong> <span th:text="${survey.title}"></span></p>
-  <p><strong>질문:</strong> <span th:text="${survey.question}"></span></p>
-</div>
-<form action="/survey/submitSubjectiveAnswer" method="POST">
-  <input type="hidden" name="surveyId" th:value="${survey.id}">
-  <div class="form-group">
-    <label for="answer">답변을 입력하세요:</label>
-    <input type="text" id="answer" name="answer" required>
+<div class="container">
+  <h1>주관식 설문조사 답변<img src="/images/survey-icon.png" alt="설문조사 아이콘" class="menu-icon" width="24" height="24"></h1>
+  <div>
+    <p><strong>설문조사 제목:</strong> <span th:text="${survey.title}"></span></p>
+    <p><strong>질문:</strong> <span th:text="${survey.question}"></span></p>
   </div>
-  <button type="submit">제출</button>
-</form>
-<p th:if="${result}" th:text="${result}"></p>
-<div class="menu-button-container">
-  <a th:href="@{/survey/subjectiveSurveyResult/{id}(id=${survey.id})}" class="menu-button">결과 보기</a>
+  <form action="/survey/submitSubjectiveAnswer" method="POST">
+    <input type="hidden" name="surveyId" th:value="${survey.id}">
+    <div class="form-group">
+      <label for="answer">답변을 입력하세요:</label>
+      <input type="text" id="answer" name="answer" required>
+    </div>
+    <button type="submit">제출</button>
+  </form>
+  <p th:if="${result}" th:text="${result}"></p>
+  <div class="menu-button-container">
+    <a th:href="@{/survey/subjectiveSurveyResult/{id}(id=${survey.id})}" class="menu-button">결과 보기</a>
+  </div>
+  <div class="qr-code-container">
+    <h2>설문조사 QR 코드</h2>
+    <button class="qr-code-button" onclick="toggleQRCode()">QR 코드 보기</button>
+    <div class="qr-code" id="qrCode">
+      <img th:src="@{'/generate-qr?memberId=' + ${survey.member.memberId} + '&purpose=subjectiveSurveyAnswer&id=' + ${survey.id}}" alt="QR Code">
+      <p th:text="'QR 코드 URL: ' + ${qrCodeUrl}"></p>
+    </div>
+  </div>
 </div>
-<div>
-  <h2>설문조사 QR 코드</h2>
-  <img th:src="@{'/generate-qr?memberId=' + ${survey.member.memberId} + '&purpose=subjectiveSurveyAnswer&id=' + ${survey.id}}" alt="QR Code">
-</div>
-<!-- QR 코드 아래에 URL을 표시 -->
-<p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" style="margin-top: 10px;"></p>
+<script>
+  function toggleQRCode() {
+    const qrCode = document.getElementById('qrCode');
+    if (qrCode.style.display === 'none' || qrCode.style.display === '') {
+      qrCode.style.display = 'block';
+    } else {
+      qrCode.style.display = 'none';
+    }
+  }
+</script>
 </body>
 </html>

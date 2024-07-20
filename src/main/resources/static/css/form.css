@@ -35,18 +35,32 @@ body {
   width: 100%; /* 너비를 100%로 설정 */
 }
 
-h1, h2 {
+h1 {
   text-align: center;
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
   color: var(--text-color);
 }
 
-.survey-choice-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+input[type="text"],
+select {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
-.choice-button, .view-list-button {
+button {
   background-color: var(--button-color);
   color: white;
   border: none;
@@ -55,59 +69,14 @@ h1, h2 {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  font-weight: bold; /* 폰트 굵기 통일 */
-  margin: 10px;
-  transition: background-color 0.3s;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.choice-button:hover, .view-list-button:hover {
-  background-color: var(--button-hover-color);
-}
-
-.survey-list-container {
-  margin-top: 30px;
-  text-align: center;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin: 10px 0;
-}
-
-.view-button, .delete-button {
-  background-color: var(--button-color);
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  margin-left: 10px;
   transition: background-color 0.3s;
   cursor: pointer;
   border-radius: 5px;
 }
 
-.view-button:hover, .delete-button:hover {
+button:hover {
   background-color: var(--button-hover-color);
-}
-
-.delete-button {
-  background-color: #28a745;
-}
-
-.delete-button:hover {
-  background-color: #c82333;
 }
 
 .menu-button-container {
@@ -116,7 +85,7 @@ li {
   margin-top: 20px;
 }
 
-.menu-button {
+.back-button {
   background-color: var(--highlight-color);
   color: white;
   border: none;
@@ -125,13 +94,18 @@ li {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  font-weight: bold; /* 폰트 굵기 통일 */
   margin: 10px;
   transition: background-color 0.3s;
   cursor: pointer;
   border-radius: 5px;
 }
 
-.menu-button:hover {
+.back-button:hover {
   background-color: var(--highlight-hover-color);
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }

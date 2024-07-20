@@ -1,24 +1,54 @@
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 20px;
-  color: #333;
+:root {
+  /* 색상 정의 */
+  --background-color: #ffffff;  /* 흰색 배경 */
+  --button-color: #ff8c00;      /* 주황색 버튼 */
+  --button-hover-color: #ff6600; /* 짙은 주황색 */
+  --text-color: #ff8c00;        /* 주황색 텍스트 */
+  --container-background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 */
+  --container-shadow-color: rgba(255, 140, 0, 0.4); /* 그림자 주황색 */
+  --highlight-color: #28a745; /* 메뉴 버튼 색상 */
+  --highlight-hover-color: #218838; /* 메뉴 버튼 호버 색상 */
 }
 
-h1 {
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--background-color);
+  background-image: url('../images/pencil-icon.png'); /* 배경 이미지 경로 */
+  background-size: 35%; /* 배경 이미지 크기 설정 */
+  background-repeat: no-repeat; /* 배경 이미지 반복 없음 */
+  background-position: center; /* 배경 이미지 가운데 정렬 */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   text-align: center;
-  color: #5a5a5a;
+  color: var(--text-color);
+}
+
+.container {
+  background: var(--container-background-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px var(--container-shadow-color);
+  max-width: 600px; /* 최대 너비 설정 */
+  width: 100%; /* 너비를 100%로 설정 */
+}
+
+h1, h2 {
+  text-align: center;
+  color: var(--text-color);
 }
 
 .quiz-choice-container {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
-.choice-button {
-  background-color: #4CAF50;
+.choice-button, .view-list-button {
+  background-color: var(--button-color);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -26,14 +56,15 @@ h1 {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
+  font-weight: bold; /* 폰트 굵기 통일 */
   margin: 10px;
   transition: background-color 0.3s;
   cursor: pointer;
   border-radius: 5px;
 }
 
-.choice-button:hover {
-  background-color: #45a049;
+.choice-button:hover, .view-list-button:hover {
+  background-color: var(--button-hover-color);
 }
 
 .quiz-list-container {
@@ -41,42 +72,43 @@ h1 {
   text-align: center;
 }
 
-.quiz-list-container ul {
+ul {
   list-style-type: none;
   padding: 0;
 }
 
-.quiz-list-container li {
-  margin: 10px 0;
+li {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 10px 0;
 }
 
-.quiz-list-container a {
+.view-button, .delete-button {
+  background-color: var(--button-color);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  text-align: center;
   text-decoration: none;
-  color: #007BFF;
-  font-weight: bold;
-  margin-right: 10px;
+  display: inline-block;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.quiz-list-container a:hover {
-  color: #0056b3;
+.view-button:hover, .delete-button:hover {
+  background-color: var(--button-hover-color);
 }
 
 .delete-button {
-  font-size: 0.8em;
-  padding: 2px 5px;
-  margin-left: 10px;
-  background-color: #ff4c4c;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 3px;
+  background-color: #28a745;
 }
 
 .delete-button:hover {
-  background-color: #ff1a1a;
+  background-color: #c82333;
 }
 
 .menu-button-container {
@@ -86,7 +118,7 @@ h1 {
 }
 
 .menu-button {
-  background-color: #007BFF;
+  background-color: var(--highlight-color);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -94,6 +126,7 @@ h1 {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
+  font-weight: bold; /* 폰트 굵기 통일 */
   margin: 10px;
   transition: background-color 0.3s;
   cursor: pointer;
@@ -101,5 +134,5 @@ h1 {
 }
 
 .menu-button:hover {
-  background-color: #0056b3;
+  background-color: var(--highlight-hover-color);
 }
