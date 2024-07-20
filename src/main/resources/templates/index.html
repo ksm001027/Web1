@@ -3,24 +3,34 @@
 <head>
   <link rel="stylesheet" href="/css/index.css">
   <meta charset="UTF-8">
-  <title>login</title>
-  <link rel="stylesheet" href="/css/index.css">
-  <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <title>Login</title>
 </head>
 <body>
-<form action="/member/login" method="post">
-  <div class="input-group">
-    <label for="memberEmail">이메일:</label>
-    <input type="text" id="memberEmail" name="memberEmail">
-  </div>
-  <div class="input-group">
-    <label for="memberPassword">비밀번호:</label>
-    <input type="password" id="memberPassword" name="memberPassword">
-  </div>
-  <input type="submit" value="로그인">
-  <div th:if="${loginError}" style="color: red; margin-top: 10px;">
-    <p th:text="${loginError}"></p>
-  </div>
-</form>
+<div class="login-container">
+  <form action="/member/login" method="post">
+    <h2>LOGIN</h2>
+    <div class="input-group">
+      <input type="text" id="memberEmail" name="memberEmail" required>
+      <label for="memberEmail">아이디</label>
+    </div>
+    <div class="input-group">
+      <input type="password" id="memberPassword" name="memberPassword" required>
+      <label for="memberPassword">비밀번호</label>
+      <span class="toggle-password">&#x1F441;</span>
+    </div>
+    <input type="submit" value="SUBMIT">
+    <div class="error-message" style="display: none;">
+      <p>Example error message</p>
+    </div>
+  </form>
+</div>
+<script>
+  document.querySelector('.toggle-password').addEventListener('click', function() {
+    const passwordField = document.getElementById('memberPassword');
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+    this.textContent = type === 'password' ? '\u{1F441}' : '\u{1F648}';
+  });
+</script>
 </body>
 </html>

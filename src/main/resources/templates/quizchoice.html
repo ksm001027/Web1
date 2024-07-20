@@ -3,40 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>퀴즈 유형 선택</title>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/quizchoice.css}"/>
+  <title>퀴즈 유형을 선택해주세요</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/quizchoice.css}"/>
 </head>
 <body>
-<h1>퀴즈 유형 선택</h1>
-<div class="quiz-choice-container">
-  <a th:href="@{/subjective}" class="choice-button">주관식 퀴즈 등록</a>
-  <a th:href="@{/objective}" class="choice-button">객관식 퀴즈 등록</a>
-</div>
-<div class="quiz-list-container">
-  <h2>등록된 주관식 퀴즈</h2>
-  <ul>
-    <li th:each="quiz : ${subjectiveQuizzes}">
-      <a th:href="@{'/quiz/subjectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
-      <form th:action="@{/quiz/delete}" method="post" style="display:inline;">
-        <input type="hidden" name="quizId" th:value="${quiz.id}">
-        <button type="submit" class="delete-button">삭제</button>
-      </form>
-    </li>
-  </ul>
-  <h2>등록된 객관식 퀴즈</h2>
-  <ul>
-    <li th:each="quiz : ${objectiveQuizzes}">
-      <a th:href="@{'/quiz/objectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
-      <form th:action="@{/quiz/delete}" method="post" style="display:inline;">
-        <input type="hidden" name="quizId" th:value="${quiz.id}">
-        <button type="submit" class="delete-button">삭제</button>
-      </form>
-    </li>
-  </ul>
-</div>
-<div class="menu-button-container">
-  <a th:href="@{/web-menu}" class="menu-button">메뉴로 이동</a>
-</div>
+<header>
+  <nav>
+    <ul>
+      <li><a href="/quiz/quizChoice">퀴즈</a></li>
+      <li><a href="/survey/surveyChoice">설문조사</a></li>
+      <li><a href="/uploadForm">파일 배포</a></li>
+      <li><a href="#" onclick="createChatRoom()">실시간 챗</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <h1>퀴즈 유형 선택</h1>
+  <div class="quiz-choice-container">
+    <a th:href="@{/subjective}" class="choice-button subjective-button">
+      <img src="../images/subjectivequiz.png" alt="주관식 아이콘" class="icon">
+      <span>  주관식 퀴즈 등록</span>
+    </a>
+    <a th:href="@{/objective}" class="choice-button objective-button">
+      <img src="../images/objectivequiz.png" alt="객관식 아이콘" class="icon">
+      <span>  객관식 퀴즈 등록</span>
+    </a>
+  </div>
+  <div class="quiz-list-container">
+    <h2>등록된 주관식 퀴즈</h2>
+    <ul>
+      <li th:each="quiz : ${subjectiveQuizzes}">
+        <a th:href="@{'/quiz/subjectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
+        <form th:action="@{/quiz/deleteSubjectiveQuiz}" method="post" style="display:inline;">
+          <input type="hidden" name="quizId" th:value="${quiz.id}">
+          <button type="submit" class="delete-button">
+            <img src="../images/delete.png" alt="삭제" class="delete-icon">
+            삭제
+          </button>
+        </form>
+      </li>
+    </ul>
+    <h2>등록된 객관식 퀴즈</h2>
+    <ul>
+      <li th:each="quiz : ${objectiveQuizzes}">
+        <a th:href="@{'/quiz/objectiveQuiz/' + ${quiz.id}}" th:text="${quiz.title}">퀴즈 제목</a>
+        <form th:action="@{/quiz/deleteObjectiveQuiz}" method="post" style="display:inline;">
+          <input type="hidden" name="quizId" th:value="${quiz.id}">
+          <button type="submit" class="delete-button">
+            <img src="../images/delete.png" alt="삭제" class="delete-icon">
+            삭제
+          </button>
+        </form>
+      </li>
+    </ul>
+  </div>
+  <div class="menu-button-container">
+    <a th:href="@{/web-menu}" class="menu-button">메뉴로 이동</a>
+  </div>
+</main>
+<script>
+  function createChatRoom() {
+    const uuid = generateUUID();
+    window.location.href = '/chat/' + uuid;
+  }
+
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+</script>
 </body>
 </html>

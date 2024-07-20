@@ -11,12 +11,15 @@
   <h1>파일 다운로드</h1>
   <ul>
     <li th:each="file : ${files}">
-      <a th:href="@{'/download?filename=' + ${file.filename}}" th:text="${file.filename}">Download Link</a>
+      <a th:href="@{'/download?filename=' + ${file.filename}}">
+        <img src="../images/download.png" alt="Download Icon" class="icon">
+        <span th:text="${file.filename}">Download Link</span>
+      </a>
     </li>
   </ul>
   <div>
-    <img th:src="@{'/generate-qr?memberId=' + ${memberId} + '&purpose=fileDownload&id=' + ${memberId}}" alt="Download Page QR Code" style="width: 200px; margin-top: 20px;">
-    <p th:text="'QR 코드 URL: ' + ${serverAddress} + '/redirect-download?tempSessionId=' + ${tempSessionId}" style="margin-top: 10px;"></p> <!-- QR 코드 아래에 URL을 표시 -->
+    <img th:src="@{'/generate-qr?memberId=' + ${memberId} + '&purpose=fileDownload&id=' + ${memberId}}" alt="Download Page QR Code" class="qr-code">
+    <p th:text="'QR 코드 URL: ' + ${serverAddress} + '/redirect-download?tempSessionId=' + ${tempSessionId}" class="qr-url"></p>
   </div>
 </div>
 </body>

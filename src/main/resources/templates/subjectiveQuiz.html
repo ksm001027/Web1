@@ -6,28 +6,29 @@
   <title>주관식 퀴즈</title>
   <link rel="stylesheet" href="/css/quiz.css">
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>주관식 퀴즈</h1>
-<div>
-  <p><strong>퀴즈 제목:</strong> <span th:text="${quiz.title}"></span></p>
-  <p><strong>질문:</strong> <span th:text="${quiz.question}"></span></p>
-</div>
-<form action="/quiz/submitSubjectiveAnswer" method="POST">
-  <input type="hidden" name="quizId" th:value="${quiz.id}">
-  <div class="form-group">
-    <label for="answer">정답을 입력하세요:</label>
-    <input type="text" id="answer" name="answer" required>
+<main>
+  <h1>주관식 퀴즈</h1>
+  <div class="quiz-info">
+    <p><strong>퀴즈 제목:</strong> <span th:text="${quiz.title}"></span></p>
+    <p><strong>질문:</strong> <span th:text="${quiz.question}"></span></p>
   </div>
-  <button type="submit">제출</button>
-</form>
-<p th:if="${result}" th:text="${result}"></p>
-<div>
-  <h2>주관식 퀴즈 QR 코드</h2>
-  <!-- QR 코드 이미지를 동적으로 생성된 URL로 표시 -->
-  <img th:src="'/generate-qr?memberId=' + ${quiz.member.memberId} + '&purpose=subjectiveQuiz&id=' + ${quiz.id}" alt="QR Code">
-</div>
-<!-- QR 코드 아래에 URL을 표시 -->
-<p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" style="margin-top: 10px;"></p>
+  <form action="/quiz/submitSubjectiveAnswer" method="POST">
+    <input type="hidden" name="quizId" th:value="${quiz.id}">
+    <div class="form-group">
+      <label for="answer">정답을 입력하세요:</label>
+      <input type="text" id="answer" name="answer" required>
+    </div>
+    <button type="submit">제출</button>
+  </form>
+  <p th:if="${result}" th:text="${result}"></p>
+  <div class="qr-section">
+    <h2>주관식 퀴즈 QR 코드</h2>
+    <img th:src="'/generate-qr?memberId=' + ${quiz.member.memberId} + '&purpose=subjectiveQuiz&id=' + ${quiz.id}" alt="QR Code">
+    <p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" class="qr-url"></p>
+  </div>
+</main>
 </body>
 </html>

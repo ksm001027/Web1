@@ -11,13 +11,13 @@
 </head>
 <body>
 <div id="chat-room">
-  <h1 id="chat-room-title">채팅방</h1>
+  <h1 id="chat-room-title"><img src="/images/chat.png" alt="Chat Icon" class="icon"> 채팅방</h1>
   <div id="messages" class="messages"></div>
   <input type="text" id="usernameInput" placeholder="이름을 입력하시오">
   <input type="text" id="messageInput" placeholder="내용을 입력하시오">
   <div class="button-container">
-    <button onclick="sendMessage()">전송</button>
-    <button id="showQRButton" onclick="toggleQRCode()">QR코드</button>
+    <button onclick="sendMessage()"><img src="/images/send.png" alt="Send Icon" class="icon"></button>
+    <button id="showQRButton" onclick="toggleQRCode()"><img src="/images/qr.png" alt="QR Icon" class="icon"></button>
   </div>
   <!-- QR 코드를 표시할 요소 -->
   <div id="qrcode-container" class="qrcode-container">

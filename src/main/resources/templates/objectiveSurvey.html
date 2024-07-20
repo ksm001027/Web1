@@ -8,38 +8,63 @@
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
 </head>
 <body>
-<h1>객관식 설문조사 등록</h1>
-<form action="/survey/submitObjective" method="POST">
-  <div class="form-group">
-    <label for="surveyTitle">설문조사 제목:</label>
-    <input type="text" id="surveyTitle" name="surveyTitle" required>
+<header>
+  <nav>
+    <ul>
+      <li><a href="/quiz/quizChoice">퀴즈</a></li>
+      <li><a href="/survey/surveyChoice">설문조사</a></li>
+      <li><a href="/uploadForm">파일 배포</a></li>
+      <li><a href="#" onclick="createChatRoom()">실시간 챗</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <h1>객관식 설문조사 등록</h1>
+  <form action="/survey/submitObjective" method="POST">
+    <div class="form-group">
+      <label for="surveyTitle">설문조사 제목:</label>
+      <input type="text" id="surveyTitle" name="surveyTitle" required>
+    </div>
+    <div class="form-group">
+      <label for="question">질문:</label>
+      <input type="text" id="question" name="question" required>
+    </div>
+    <div class="form-group">
+      <label for="option1">보기 1:</label>
+      <input type="text" id="option1" name="option1" required>
+    </div>
+    <div class="form-group">
+      <label for="option2">보기 2:</label>
+      <input type="text" id="option2" name="option2" required>
+    </div>
+    <div class="form-group">
+      <label for="option3">보기 3:</label>
+      <input type="text" id="option3" name="option3" required>
+    </div>
+    <div class="form-group">
+      <label for="option4">보기 4:</label>
+      <input type="text" id="option4" name="option4" required>
+    </div>
+    <button type="submit">설문조사 등록</button>
+  </form>
+  <div class="menu-button-container">
+    <a th:href="@{/survey/surveyChoice}" class="back-button">
+      <img src="/images/back-icon.png" alt="뒤로가기 아이콘" class="back-icon"> 설문조사 선택 페이지로 이동
+    </a>
   </div>
-  <div class="form-group">
-    <label for="question">질문:</label>
-    <input type="text" id="question" name="question" required>
-  </div>
-  <div class="form-group">
-    <label for="option1">보기 1:</label>
-    <input type="text" id="option1" name="option1" required>
-  </div>
-  <div class="form-group">
-    <label for="option2">보기 2:</label>
-    <input type="text" id="option2" name="option2" required>
-  </div>
-  <div class="form-group">
-    <label for="option3">보기 3:</label>
-    <input type="text" id="option3" name="option3" required>
-  </div>
-  <div class="form-group">
-    <label for="option4">보기 4:</label>
-    <input type="text" id="option4" name="option4" required>
-  </div>
-  <button type="submit">설문조사 등록</button>
-</form>
-<div class="menu-button-container">
-  <a th:href="@{/survey/surveyChoice}" class="back-button">
-    <img src="/images/back-icon.png" alt="뒤로가기 아이콘" class="back-icon"> 설문조사 선택 페이지로 이동
-  </a>
-</div>
+</main>
+<script>
+  function createChatRoom() {
+    const uuid = generateUUID();
+    window.location.href = '/chat/' + uuid;
+  }
+
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+</script>
 </body>
 </html>

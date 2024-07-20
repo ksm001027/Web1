@@ -6,33 +6,34 @@
   <title>객관식 퀴즈</title>
   <link rel="stylesheet" href="/css/quiz.css">
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>객관식 퀴즈</h1>
-<div>
-  <p><strong>퀴즈 제목:</strong> <span th:text="${quiz.title}"></span></p>
-  <p><strong>질문:</strong> <span th:text="${quiz.question}"></span></p>
-</div>
-<form action="/quiz/submitObjectiveAnswer" method="POST">
-  <input type="hidden" name="quizId" th:value="${quiz.id}">
-  <div class="form-group">
-    <label for="answer">정답을 선택하세요:</label>
-    <select id="answer" name="answer" required>
-      <option value="1" th:text="${quiz.option1}"></option>
-      <option value="2" th:text="${quiz.option2}"></option>
-      <option value="3" th:text="${quiz.option3}"></option>
-      <option value="4" th:text="${quiz.option4}"></option>
-    </select>
+<main>
+  <h1>객관식 퀴즈</h1>
+  <div class="quiz-info">
+    <p><strong>퀴즈 제목:</strong> <span th:text="${quiz.title}"></span></p>
+    <p><strong>질문:</strong> <span th:text="${quiz.question}"></span></p>
   </div>
-  <button type="submit">제출</button>
-</form>
-
-<p th:if="${result}" th:text="${result}"></p>
-<div>
-  <h2>객관식 퀴즈 QR 코드</h2>
-  <img th:src="@{'/generate-qr?memberId=' + ${quiz.member.memberId} + '&purpose=objectiveQuiz&id=' + ${quiz.id}}" alt="QR Code">
-</div>
-<!-- QR 코드 아래에 URL을 표시 -->
-<p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" style="margin-top: 10px;"></p>
+  <form action="/quiz/submitObjectiveAnswer" method="POST">
+    <input type="hidden" name="quizId" th:value="${quiz.id}">
+    <div class="form-group">
+      <label for="answer">정답을 선택하세요:</label>
+      <select id="answer" name="answer" required>
+        <option value="1" th:text="${quiz.option1}"></option>
+        <option value="2" th:text="${quiz.option2}"></option>
+        <option value="3" th:text="${quiz.option3}"></option>
+        <option value="4" th:text="${quiz.option4}"></option>
+      </select>
+    </div>
+    <button type="submit">제출</button>
+  </form>
+  <p th:if="${result}" th:text="${result}"></p>
+  <div class="qr-section">
+    <h2>객관식 퀴즈 QR 코드</h2>
+    <img th:src="@{'/generate-qr?memberId=' + ${quiz.member.memberId} + '&purpose=objectiveQuiz&id=' + ${quiz.id}}" alt="QR Code">
+    <p th:text="'QR 코드 URL: ' + ${qrCodeUrl}" class="qr-url"></p>
+  </div>
+</main>
 </body>
 </html>

@@ -1,145 +1,187 @@
-/* 공통 스타일 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
-  background-color: #f4f4f9;
+  font-family: 'Noto Sans KR', Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+header {
+  width: 100%;
+  padding: 20px 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  margin: 0 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333333;
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #007bff;
+}
+
+main {
+  text-align: center;
+  margin-top: 100px; /* 헤더 아래로 공간 확보 */
+  width: 90%;
+  max-width: 800px;
+  padding: 20px;
 }
 
 h1 {
-  color: #333;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: bold;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+p, ul {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+ul.content-list li:before {
+  content: '✓';
+  margin-right: 10px;
+  color: #4CAF50;
+  font-size: 18px;
+}
+
+.choice-button {
+  background-color: transparent; /* 배경색을 투명으로 설정 */
+  color: #00a8e1; /* 텍스트 색상 */
+  border: none; /* 테두리 제거 */
+  padding: 10px; /* 여백 조정 */
+  text-align: center;
+  text-decoration: none;
+  font-size: 18px;
+  margin: 20px 10px;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.choice-button:hover {
+  color: #0099cc; /* 호버시 텍스트 색상 변경 */
+}
+
+.icon {
+  vertical-align: middle;
+  margin-bottom: 10px; /* 아이콘과 텍스트 사이에 여백 추가 */
+  width: 48px; /* 아이콘 크기 증가 */
+  height: 48px;
+}
+
+.quiz-list-container {
+  margin-top: 20px;
   text-align: center;
 }
 
-.upload-container {
+.quiz-list-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.quiz-list-container li {
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.quiz-list-container a {
+  text-decoration: none;
+  color: #007BFF;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.quiz-list-container a:hover {
+  color: #0056b3;
+}
+
+.delete-button {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8em;
+  padding: 2px 5px;
+  margin-left: 10px;
+  background-color: #ff4c4c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.delete-button img.delete-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.delete-button:hover {
+  background-color: #ff1a1a;
+}
+
+.menu-button-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-input[type="file"] {
-  margin-right: 10px;
-}
-
-button {
-  background-color: #5c67f2;
+.menu-button {
+  background-color: #007BFF;
   color: white;
-  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #5058e2;
-}
-
-.button-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-around;
-}
-
-.button {
-  background-color: #5c67f2;
-  color: white;
   padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  text-align: center;
   text-decoration: none;
   display: inline-block;
+  font-size: 18px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
-.button:hover {
-  background-color: #5058e2;
-}
-
-/* 반응형 스타일 */
-/* 큰 화면 (예: 데스크탑) */
-@media (min-width: 1200px) {
-  .button-container {
-    flex-direction: row;
-  }
-
-  button {
-    font-size: 16px;
-    padding: 12px 24px;
-  }
-
-  .button {
-    font-size: 16px;
-    padding: 12px 24px;
-  }
-}
-
-/* 중간 화면 (예: 태블릿) */
-@media (max-width: 1199px) and (min-width: 768px) {
-  .button-container {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 10px 20px;
-  }
-
-  .button {
-    font-size: 14px;
-    padding: 10px 20px;
-  }
-}
-
-/* 작은 화면 (예: 모바일) */
-@media (max-width: 767px) {
-  body {
-    margin: 20px;
-  }
-
-  .upload-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  input[type="file"] {
-    margin: 0 0 10px 0;
-  }
-
-  button {
-    width: 100%;
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  .button-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .button {
-    margin-top: 10px;
-    width: 100%;
-    font-size: 14px;
-    padding: 12px;
-  }
-}
-
-/* 매우 작은 화면 (예: 작은 모바일 기기) */
-@media (max-width: 480px) {
-  body {
-    margin: 10px;
-  }
-
-  button {
-    width: 100%;
-    padding: 10px;
-    font-size: 12px;
-  }
-
-  .button {
-    margin-top: 5px;
-    width: 100%;
-    font-size: 12px;
-    padding: 10px;
-  }
+.menu-button:hover {
+  background-color: #0056b3;
 }

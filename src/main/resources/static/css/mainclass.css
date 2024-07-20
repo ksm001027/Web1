@@ -1,42 +1,84 @@
-:root {
-  /* 색상 정의 */
-  --background-color: #f4f4f9;
-  --button-color: #5c67f2;
-  --button-hover-color: #5058e2;
-  --text-color: #333;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
-  background-color: var(--background-color);
-}
-
-h1 {
-  color: var(--text-color);
-  text-align: center;
-}
-
-.menu-container {
+  font-family: 'Noto Sans KR', Arial, sans-serif;
+  background-image: url('../images/background2.jpg'); /* 배경 이미지 경로 */
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+  color: #fff; /* 텍스트를 흰색으로 변경 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
-}
-
-.menu-button {
-  background-color: var(--button-color);
-  color: white;
-  padding: 15px 30px;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-size: 18px;
-  width: 200px;
+  height: 100vh;
   text-align: center;
-  transition: background-color 0.3s;
 }
 
-.menu-button:hover {
-  background-color: var(--button-hover-color);
+header {
+  width: 100%;
+  padding: 20px 0;
+  background-color: rgba(255, 255, 255, 0.9); /* 더 높은 투명도 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  margin: 0 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333333;
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #007bff;
+}
+
+.content {
+  margin-top: 150px; /* 헤더 아래로 공간 확보 */
+}
+
+p, ul {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+ul.content-list li:before {
+  content: '✓';
+  margin-right: 10px;
+  color: #4CAF50;
+  font-size: 18px;
+}
+
+nav ul li a::before {
+  content: ''; /* 비어 있는 content로 체크 표시 제거 */
+  margin-right: 0;
 }

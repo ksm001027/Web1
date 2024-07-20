@@ -1,19 +1,30 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>기능 선택</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/mainclass.css}"/> <!-- CSS 참조 -->
+  <link rel="stylesheet" type="text/css" href="/css/mainclass.css"/>
 </head>
 <body>
-<h1>기능 선택</h1>
-<div class="menu-container">
-  <a th:href="@{/quiz/quizChoice}" class="menu-button">퀴즈</a> <!-- 경로 수정 -->
-  <a th:href="@{/survey/surveyChoice}" class="menu-button">설문조사</a> <!-- 경로 수정 -->
-  <a th:href="@{/uploadForm}" class="menu-button">파일 배포</a>
-  <button class="menu-button" onclick="createChatRoom()">실시간 챗</button>
+<header>
+  <nav>
+    <ul>
+      <li><a href="/quiz/quizChoice">퀴즈</a></li>
+      <li><a href="/survey/surveyChoice">설문조사</a></li>
+      <li><a href="/uploadForm">파일 배포</a></li>
+      <li><a href="#" onclick="createChatRoom()">실시간 챗</a></li>
+    </ul>
+  </nav>
+</header>
+<div class="content">
+  <p>이 웹페이지는 수업 보조를 위한 다양한 기능을 제공합니다. 여러분이 원하는 기능을 선택하세요.</p>
+  <ul class="content-list">
+    <li>퀴즈: 다양한 주제를 다룬 퀴즈를 풀어보세요.</li>
+    <li>설문조사: 수업 관련 의견을 조사하고 공유하세요.</li>
+    <li>파일 배포: 수업 자료를 간편하게 배포하세요.</li>
+    <li>실시간 챗: 실시간으로 질문하고 답변하세요.</li>
+  </ul>
 </div>
 
 <script>

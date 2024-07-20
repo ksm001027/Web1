@@ -1,28 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f9;
+  font-family: 'Noto Sans KR', Arial, sans-serif;
+  margin: 40px;
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  width: 100%;
+  padding: 20px 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+nav ul {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  margin: 0 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #007bff;
+}
+
+main {
   text-align: center;
+  margin-top: 100px; /* 헤더 아래로 공간 확보 */
+  width: 90%;
+  max-width: 800px;
+  padding: 20px;
 }
 
 h1 {
-  color: #333;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: bold;
+  font-size: 36px;
   margin-bottom: 20px;
 }
 
 .upload-container {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 input[type="file"] {
-  margin-right: 10px;
+  display: none;
+}
+
+.custom-file-upload {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+}
+
+.file-name {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #666;
 }
 
 button {
@@ -32,6 +94,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-left: 10px;
 }
 
 button:hover {
@@ -39,28 +102,33 @@ button:hover {
 }
 
 .button-container {
-  margin-top: 20px;
   display: flex;
   justify-content: space-around;
+  margin-top: 20px;
 }
 
-.button {
-  background-color: #5c67f2;
-  color: white;
-  padding: 10px 20px;
+.text-button {
+  background: none;
   border: none;
-  border-radius: 4px;
+  color: #007bff;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
   text-decoration: none;
-  display: inline-block;
+  transition: color 0.3s ease;
 }
 
-.button:hover {
-  background-color: #5058e2;
+.text-button:hover {
+  color: #0056b3;
+}
+
+.text-button .icon {
+  margin-right: 8px;
 }
 
 ul {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
 }
 
@@ -68,37 +136,28 @@ li {
   margin-bottom: 10px;
 }
 
-li form button {
-  background-color: #dc3545;
-  padding: 5px 10px;
-  font-size: 12px;
-  margin-left: 10px;
-  border-radius: 4px;
+.delete-button {
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
+  cursor: pointer;
+  padding: 0; /* 패딩 제거 */
+  display: flex;
+  align-items: center;
 }
 
-li form button:hover {
-  background-color: #c82333;
+.delete-button .delete-icon {
+  width: 24px; /* 아이콘 크기 */
+  height: 24px; /* 아이콘 크기 */
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
 }
 
-/* 화면 비율에 따라 스타일 조정 */
-@media (max-width: 1200px) and (min-aspect-ratio: 3/2) {
-  .button-container {
-    flex-direction: row;
-  }
+.delete-button:hover .delete-icon {
+  opacity: 0.8; /* 호버 시 아이콘 불투명도 조정 */
 }
 
-@media (max-width: 1200px) and (max-aspect-ratio: 3/2) {
-  .button-container {
-    flex-direction: column;
-    align-items: center;
-  }
 
-  .button {
-    margin-top: 10px;
-    width: 100%;
-  }
-}
-
+/* 반응형 스타일 */
 @media (max-width: 600px) {
   body {
     margin: 20px;
@@ -109,13 +168,8 @@ li form button:hover {
     align-items: center;
   }
 
-  input[type="file"] {
-    margin: 0 0 10px 0;
-  }
-
-  button {
-    width: 100%;
-    padding: 10px;
+  .custom-file-upload, .file-name, button {
+    margin-bottom: 10px;
   }
 
   .button-container {
@@ -123,28 +177,8 @@ li form button:hover {
     align-items: center;
   }
 
-  .button {
+  .text-button {
     margin-top: 10px;
     width: 100%;
-  }
-}
-
-/* 매우 작은 화면 (예: 작은 모바일 기기) */
-@media (max-width: 480px) {
-  body {
-    margin: 10px;
-  }
-
-  button {
-    width: 100%;
-    padding: 10px;
-    font-size: 12px;
-  }
-
-  .button {
-    margin-top: 5px;
-    width: 100%;
-    font-size: 12px;
-    padding: 10px;
   }
 }

@@ -2,16 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>파일 업로드</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" th:href="@{/css/file.css}"/>
   <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
 </head>
 <body>
-<div class="container">
+<header>
+  <nav>
+    <ul>
+      <li><a href="/quiz/quizChoice">퀴즈</a></li>
+      <li><a href="/survey/surveyChoice">설문조사</a></li>
+      <li><a href="/uploadForm">파일 배포</a></li>
+      <li><a href="#" onclick="createChatRoom()">실시간 챗</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
   <h1>파일 업로드</h1>
   <form method="POST" enctype="multipart/form-data" action="/upload">
     <div class="upload-container">
-      <input type="file" name="files" multiple />
+      <input type="file" name="files" multiple id="fileInput" />
+      <label for="fileInput" class="custom-file-upload">
+        <img src="../images/folder.png" alt="파일 아이콘" class="icon">
+      </label>
+      <span class="file-name">선택된 파일 없음</span>
       <button type="submit">Upload</button>
     </div>
   </form>
@@ -23,15 +38,39 @@
       <span th:text="${file.filename}">Filename</span>
       <form method="post" th:action="@{/delete}" style="display:inline;">
         <input type="hidden" name="fileId" th:value="${file.id}" />
-        <button type="submit">Delete</button>
+        <button type="submit" class="delete-button">
+          <img src="../images/delete.png" alt="삭제 아이콘" class="delete-icon">
+          삭제
+        </button>
       </form>
     </li>
   </ul>
 
   <div class="button-container">
-    <a href="/downloads" class="button">다운로드 페이지로 이동</a>
-    <a href="/web-menu" class="button">메뉴로 이동</a>
+    <a href="/downloads" class="text-button">
+      <img src="../images/file.png" alt="다운로드 아이콘" class="icon">
+      다운로드 페이지
+    </a>
+    <a href="/web-menu" class="text-button">메뉴로 이동</a>
   </div>
-</div>
+</main>
+<script>
+  document.getElementById('fileInput').addEventListener('change', function() {
+    var fileName = this.files.length ? this.files[0].name : '선택된 파일 없음';
+    document.querySelector('.file-name').textContent = fileName;
+  });
+
+  function createChatRoom() {
+    const uuid = generateUUID();
+    window.location.href = '/chat/' + uuid;
+  }
+
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+</script>
 </body>
 </html>
